@@ -153,7 +153,7 @@ def get_by_product(product):
     else:
         for row in values:
             try:
-                if row[5] == "x" and row[10].lower() == product:
+                if row[9] == "x" and row[10].lower() == product:
                     active_product.append("https://contegixapp1.livenation.com/jira/browse/" + row[0] + " " + row[1])
             except IndexError:
                 pass

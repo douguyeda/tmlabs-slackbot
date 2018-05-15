@@ -54,6 +54,8 @@ def handle_command(command, channel):
         response = get_by_product(command)
     elif command.isdigit():
         response = get_by_EFEAT(command)
+    else:
+        response = default_response
 
     # Sends the response back to the channel
     slack_client.api_call(

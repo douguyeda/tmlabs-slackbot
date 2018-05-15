@@ -36,12 +36,13 @@ def handle_command(command, channel):
         "active":"Displays all active tests",
         "product": "Displays all active Product Support Tests",
         "ccp": "Displays all active CCP EDP tests",
-        "product id": "Displays all active tests by product id (ADP, HOME, RCO, identity)",
+        "product id": "Displays all active tests by product id (ADP, HOME, RCO, etc.)",
         "EFEAT####": "Displays information about an EFEAT (Please type only the #)."
     }
     default_response = "Beep Boop, here are a list of commands:\n" + '\n'.join("%s=%r" % (key,val) for (key,val) in commands.iteritems())
 
     command = command.lower()
+    products = ["adp", "home", "rco", "identity", "tmr checkout", "discovery", "mobile app"]
 
     response = None
     if command.startswith("active"):
@@ -50,12 +51,10 @@ def handle_command(command, channel):
         response = get_active_psupport()
     elif command.startswith("ccp"):
         response = get_active_ccp()
-    elif command == "adp" or "home" or "rco" or "identity" or "tmr checkout":
+    elif command in products:
         response = get_by_product(command)
     elif command.isdigit():
         response = get_by_EFEAT(command)
-    else:
-        response = default_response
 
     # Sends the response back to the channel
     slack_client.api_call(

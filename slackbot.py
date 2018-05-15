@@ -5,7 +5,7 @@ https://github.com/michaelkrukov/heroku-python-script
 """
 import time
 from slackclient import SlackClient
-from spreadsheet import get_active_tests, get_active_psupport, get_active_ccp, get_by_EFEAT, get_by_product
+from spreadsheet import get_active_tests, get_active_psupport, get_active_ccp, get_active_reload, get_by_product, get_by_EFEAT
 
 # instantiate Slack client
 slack_client = SlackClient('xoxb-337102695590-V3oUU20y2t20t4lhz4Tc7MUC')
@@ -33,13 +33,15 @@ def handle_command(command, channel):
         query searched by user in the slack channel
     """
     commands = {
-        "active":"Displays all active tests",
-        "product": "Displays all active Product Support Tests",
-        "ccp": "Displays all active CCP EDP tests",
-        "product id": "Displays all active tests by product id (ADP, HOME, RCO, etc.)",
-        "EFEAT####": "Displays information about an EFEAT (Please type only the #)."
+        "active": "Returns all active tests",
+        "product": "Returns all active Product Support Tests",
+        "ccp":  "Returns all active CCP EDP tests",
+        "reload": "Returns all tests that cause the page to reload",
+        "Search by page type": "Type a page type such as 'ADP' to show all active tests on that page type",
+        "Search by EFEAT####": "Type the EFEAT#### such as '5927' to bring up information about that test"
     }
-    default_response = "Beep Boop, here are a list of commands:\n" + '\n'.join("%s=%r" % (key,val) for (key,val) in commands.iteritems())
+
+    default_response = "Beep Boop, here are a list of commands:\n" + '\n'.join("%s=%s" % (key,val) for (key,val) in commands.iteritems())
 
     command = command.lower()
     products = ["adp", "home", "rco", "identity", "tmr checkout", "discovery", "mobile app"]
@@ -51,6 +53,8 @@ def handle_command(command, channel):
         response = get_active_psupport()
     elif command.startswith("ccp"):
         response = get_active_ccp()
+    elif command.startswith("reload"):
+        response= get_active_reload()
     elif command in products:
         response = get_by_product(command)
     elif command.isdigit():

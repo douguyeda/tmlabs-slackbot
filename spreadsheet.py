@@ -93,6 +93,59 @@ def get_active_ccp():
                 pass
     return 'All active CCP EDP tests:\n' + '\n'.join(active_ccp)
 
+def get_active_reload():
+    """ Grab all active tests force a reload from the A/B active sheet """
+    credentials = get_credentials()
+    http = credentials.authorize(httplib2.Http())
+    discoveryUrl = ('https://sheets.googleapis.com/$discovery/rest?version=v4')
+    service = discovery.build('sheets', 'v4', http=http, cache_discovery=False, discoveryServiceUrl=discoveryUrl)
+
+    spreadsheetId = '1yhqjAVuo_nlByP4G6zGfQ3gF3fz3IR4FXnqaN93OVUo'
+    rangeName = 'AB - Tests Live!A2:J'
+    result = service.spreadsheets().values().get(
+        spreadsheetId=spreadsheetId, range=rangeName).execute()
+    values = result.get('values', [])
+
+    active_reload = []
+    if not values:
+        return "No values found in spreadsheet"
+    else:
+        for row in values:
+            try:
+                if row[6] == "x" and row[9] == "x":
+                    active_reload.append("https://contegixapp1.livenation.com/jira/browse/" + row[0] + " " + row[1])
+            except IndexError:
+                pass
+    return 'All active reload tests:\n' + '\n'.join(active_reload)
+
+def get_by_product(product):
+    """ Grab active tests by product value from the A/B active sheet """
+    credentials = get_credentials()
+    http = credentials.authorize(httplib2.Http())
+    discoveryUrl = ('https://sheets.googleapis.com/$discovery/rest?version=v4')
+    service = discovery.build('sheets', 'v4', http=http, cache_discovery=False, discoveryServiceUrl=discoveryUrl)
+
+    spreadsheetId = '1yhqjAVuo_nlByP4G6zGfQ3gF3fz3IR4FXnqaN93OVUo'
+    rangeName = 'AB - Tests Live!A2:K'
+    result = service.spreadsheets().values().get(
+        spreadsheetId=spreadsheetId, range=rangeName).execute()
+    values = result.get('values', [])
+
+    active_product = []
+    if not values:
+        return "No values found in spreadsheet"
+    else:
+        for row in values:
+            try:
+                if row[9] == "x" and row[10].lower() == product:
+                    active_product.append("https://contegixapp1.livenation.com/jira/browse/" + row[0] + " " + row[1])
+            except IndexError:
+                pass
+
+    if not active_product:
+        return 'No tests found with product: ' + product
+    return 'All active ' + product + ' tests:\n' + '\n'.join(active_product)
+
 def get_by_EFEAT(efeat_num):
     """ Grab the details of a ticket by EFEAT# """
     # quick check to see if valid EFEAT# has been entered
@@ -131,33 +184,4 @@ def get_by_EFEAT(efeat_num):
                 efeat["Active"] = "no"
     if found is False:
         return efeat_string + " not found"
-    
     return json.dumps(efeat, indent=0)[2:-2]
-
-def get_by_product(product):
-    """ Grab active tests by product value from the A/B active sheet """
-    credentials = get_credentials()
-    http = credentials.authorize(httplib2.Http())
-    discoveryUrl = ('https://sheets.googleapis.com/$discovery/rest?version=v4')
-    service = discovery.build('sheets', 'v4', http=http, cache_discovery=False, discoveryServiceUrl=discoveryUrl)
-
-    spreadsheetId = '1yhqjAVuo_nlByP4G6zGfQ3gF3fz3IR4FXnqaN93OVUo'
-    rangeName = 'AB - Tests Live!A2:K'
-    result = service.spreadsheets().values().get(
-        spreadsheetId=spreadsheetId, range=rangeName).execute()
-    values = result.get('values', [])
-
-    active_product = []
-    if not values:
-        return "No values found in spreadsheet"
-    else:
-        for row in values:
-            try:
-                if row[9] == "x" and row[10].lower() == product:
-                    active_product.append("https://contegixapp1.livenation.com/jira/browse/" + row[0] + " " + row[1])
-            except IndexError:
-                pass
-
-    if not active_product:
-        return 'No tests found with product: ' + product
-    return 'All active ' + product + ' tests:\n' + '\n'.join(active_product)

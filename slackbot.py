@@ -43,7 +43,7 @@ def handle_command(command, channel):
 
     products = ["adp", "home", "rco", "identity", "tmr checkout", "discovery", "mobile app"]
 
-    default_response = "Beep Boop, here are a list of commands:\n" + '\n'.join("%s = %s" % (key, val) for (key, val) in commands.iteritems())
+    default_response = "Beep Boop, here are a list of commands:\n" + '\n'.join("%s = %r" % (key, val) for (key, val) in commands.iteritems())
     command = command.lower()
 
     response = None

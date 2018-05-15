@@ -1,14 +1,11 @@
 """
 Main slackbot program
 Author: Douglas Uyeda
-nohup python slackbot.py &
-ps -ef | grep python
-kill -9 2430 (i.e. the pid returned)
 https://github.com/michaelkrukov/heroku-python-script
 """
 import time
 from slackclient import SlackClient
-from spreadsheet import get_active_tests, get_active_psupport, get_active_ccp, get_by_EFEAT
+from spreadsheet import get_active_tests, get_active_psupport, get_active_ccp, get_by_EFEAT, get_by_product
 
 # instantiate Slack client
 slack_client = SlackClient('xoxb-337102695590-V3oUU20y2t20t4lhz4Tc7MUC')
@@ -39,6 +36,7 @@ def handle_command(command, channel):
         "active":"Displays all active tests",
         "product": "Displays all active Product Support Tests",
         "ccp": "Displays all active CCP EDP tests",
+        "product id": "Displays all active tests by product id (ADP, HOME, RCO, identity)",
         "EFEAT####": "Displays information about an EFEAT (Please type only the #)."
     }
     default_response = "Beep Boop, here are a list of commands:\n" + '\n'.join("%s=%r" % (key,val) for (key,val) in commands.iteritems())
@@ -52,6 +50,8 @@ def handle_command(command, channel):
         response = get_active_psupport()
     elif command.startswith("ccp"):
         response = get_active_ccp()
+    elif command == "adp" or "home" or "rco" or "identity" or "tmr checkout":
+        response = get_by_product(command)
     elif command.isdigit():
         response = get_by_EFEAT(command)
 

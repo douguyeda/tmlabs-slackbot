@@ -4,6 +4,7 @@ Author: Douglas Uyeda
 https://github.com/michaelkrukov/heroku-python-script
 """
 import time
+from collections import OrderedDict
 from slackclient import SlackClient
 from spreadsheet import get_active_tests, get_active_psupport, get_active_ccp, get_active_reload, get_by_product, get_by_EFEAT
 
@@ -32,19 +33,18 @@ def handle_command(command, channel):
     returns:
         query searched by user in the slack channel
     """
-    commands = {
-        "active": "Returns all active tests",
-        "product": "Returns all active Product Support Tests",
-        "ccp":  "Returns all active CCP EDP tests",
-        "reload": "Returns all tests that cause the page to reload",
-        "Search by page type": "Type a page type such as 'ADP' to show all active tests on that page type",
-        "Search by EFEAT####": "Type the EFEAT#### such as '5927' to bring up information about that test"
-    }
+    commands = OrderedDict()
+    commands["active"] = "Returns all active tests"
+    commands["product"] = "Returns all active Product Support Tests"
+    commands["ccp"] = "Returns all active CCP EDP tests"
+    commands["reload"] = "Returns all tests that cause the page to reload"
+    commands["Search by page type"] = "Type a page type such as 'ADP' to show all active tests on that page type"
+    commands["Search by EFEAT####"] = "Type the EFEAT#### such as '5927' to bring up information about that test"
 
-    default_response = "Beep Boop, here are a list of commands:\n" + '\n'.join("%s=%s" % (key,val) for (key,val) in commands.iteritems())
-
-    command = command.lower()
     products = ["adp", "home", "rco", "identity", "tmr checkout", "discovery", "mobile app"]
+
+    default_response = "Beep Boop, here are a list of commands:\n" + '\n'.join("%s = %s" % (key, val) for (key, val) in commands.iteritems())
+    command = command.lower()
 
     response = None
     if command.startswith("active"):

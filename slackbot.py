@@ -6,7 +6,7 @@ https://github.com/michaelkrukov/heroku-python-script
 import time
 from collections import OrderedDict
 from slackclient import SlackClient
-from spreadsheet import get_active_tests, get_active_psupport, get_active_ccp, get_active_reload, get_by_product, get_by_EFEAT
+from spreadsheet import get_active_tests, get_active_psupport, get_active_ccp, get_active_reload, get_by_page_type, get_by_EFEAT
 
 # instantiate Slack client
 slack_client = SlackClient('xoxb-337102695590-V3oUU20y2t20t4lhz4Tc7MUC')
@@ -56,7 +56,7 @@ def handle_command(command, channel):
     elif command.startswith("reload"):
         response= get_active_reload()
     elif command in products:
-        response = get_by_product(command)
+        response = get_by_page_type(command)
     elif command.isdigit():
         response = get_by_EFEAT(command)
 

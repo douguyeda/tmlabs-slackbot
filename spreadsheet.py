@@ -140,7 +140,7 @@ def get_by_EFEAT(efeat_num):
     values = get_tests()
     for row in values:
         try:
-            if row[0] == "efeat_string":
+            if row[0] == efeat_string:
                 found = True
                 efeat["Test Name"] = efeat_string + " " + row[1]
                 efeat["Hypothesis"] = row[3]

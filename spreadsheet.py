@@ -146,7 +146,7 @@ def get_by_EFEAT(efeat_num):
     merged_list = tests + prod_tests
     for row in merged_list:
         try:
-            if row[0] == efeat_string:
+            if efeat_string in row:
                 found = True
                 efeat["Test Name"] = efeat_string + " " + row[1]
                 efeat["Hypothesis"] = row[3]

@@ -141,8 +141,10 @@ def get_by_EFEAT(efeat_num):
     efeat_string = "EFEAT-" + efeat_num
     found = False
 
-    values = get_tests()
-    for row in values:
+    tests = get_tests()
+    prod_tests = get_product_tests()
+    merged_list = tests + prod_tests
+    for row in merged_list:
         try:
             if row[0] == efeat_string:
                 found = True

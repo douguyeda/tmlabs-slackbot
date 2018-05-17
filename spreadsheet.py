@@ -62,7 +62,7 @@ def get_active_tests():
                 active_tests.append("https://contegixapp1.livenation.com/jira/browse/" + row[0] + " " + row[1])
         except IndexError:
             pass
-            
+        
     if not active_tests:
         return "No active tests found"
     return 'All active tests:\n' + '\n'.join(active_tests)
@@ -118,9 +118,11 @@ def get_active_reload():
 
 def get_by_page_type(page_type):
     """ Return all active tests by page type from the A/B active sheet """
-    values = get_tests()
+    tests = get_tests()
+    prod_tests = get_product_tests()
+    merged_list = tests + prod_tests
     active_page = []
-    for row in values:
+    for row in merged_list:
         try:
             if row[9] == "x" and row[10].lower() == page_type:
                 active_page.append("https://contegixapp1.livenation.com/jira/browse/" + row[0] + " " + row[1])
@@ -134,7 +136,7 @@ def get_by_page_type(page_type):
 def get_by_EFEAT(efeat_num):
     """ Return the details of a ticket by EFEAT#### """
     # quick check to see if valid EFEAT# has been entered
-    if(len(efeat_num) != 4):
+    if len(efeat_num) != 4:
         return "Invalid EFEAT# entered: " + efeat_num
 
     efeat = OrderedDict()
@@ -149,7 +151,7 @@ def get_by_EFEAT(efeat_num):
             if efeat_string in row:
                 found = True
                 efeat["Test Name"] = efeat_string + " " + row[1]
-                efeat["Hypothesis"] = row[3]
+                efeat["Hypothesis"] = row[3].replace("\n", ", ")
                 efeat["Launch Date"] = row[7]
                 efeat["Link"] = "https://contegixapp1.livenation.com/jira/browse/" + row[0]
                 if row[9] == "x":

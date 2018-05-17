@@ -84,9 +84,11 @@ def get_active_psupport():
 
 def get_active_ccp():
     """ Return all active ccp tests """
-    values = get_tests()
+    tests = get_tests()
+    prod_tests = get_product_tests()
+    merged_list = tests + prod_tests
     active_ccp = []
-    for row in values:
+    for row in merged_list:
         try:
             if row[5] == "x" and row[9] == "x":
                 active_ccp.append("https://contegixapp1.livenation.com/jira/browse/" + row[0] + " " + row[1])

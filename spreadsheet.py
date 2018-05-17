@@ -16,35 +16,16 @@ def get_credentials():
     creds = ServiceAccountCredentials.from_json_keyfile_name('client_secret.json', scope)
     return creds
 
-def get_tests():
-    """ Grab all the values from AB - Tests Live sheet """
+def build_sheet(range_name):
+    """ Build a google sheet by choosing a sheet and the range """
     credentials = get_credentials()
     http = credentials.authorize(httplib2.Http())
     discoveryUrl = ('https://sheets.googleapis.com/$discovery/rest?version=v4')
     service = discovery.build('sheets', 'v4', http=http, cache_discovery=False,
                               discoveryServiceUrl=discoveryUrl)
-
-    spreadsheetId = '1yhqjAVuo_nlByP4G6zGfQ3gF3fz3IR4FXnqaN93OVUo'
-    rangeName = 'AB - Tests Live!A2:M'
+    spreadsheetId = "1yhqjAVuo_nlByP4G6zGfQ3gF3fz3IR4FXnqaN93OVUo"
     result = service.spreadsheets().values().get(
-        spreadsheetId=spreadsheetId, range=rangeName).execute()
-    values = result.get('values', [])
-
-    if not values:
-        return "No values found in spreadsheet"
-    return values
-
-def get_product_tests():
-    """ Grab all the values from AB - Prod support sheet  """
-    credentials = get_credentials()
-    http = credentials.authorize(httplib2.Http())
-    discoveryUrl = ('https://sheets.googleapis.com/$discovery/rest?version=v4')
-    service = discovery.build('sheets', 'v4', http=http, cache_discovery=False, discoveryServiceUrl=discoveryUrl)
-
-    spreadsheetId = '1yhqjAVuo_nlByP4G6zGfQ3gF3fz3IR4FXnqaN93OVUo'
-    rangeName = 'AB - Prod Support!A2:M'
-    result = service.spreadsheets().values().get(
-        spreadsheetId=spreadsheetId, range=rangeName).execute()
+        spreadsheetId=spreadsheetId, range=range_name).execute()
     values = result.get('values', [])
 
     if not values:
@@ -52,29 +33,14 @@ def get_product_tests():
     return values
 
 def get_all_tests():
-    """ Grab all the values from AB - Test Live and AB - Prod Support sheets  """
-    credentials = get_credentials()
-    http = credentials.authorize(httplib2.Http())
-    discoveryUrl = ('https://sheets.googleapis.com/$discovery/rest?version=v4')
-    service = discovery.build('sheets', 'v4', http=http, cache_discovery=False, discoveryServiceUrl=discoveryUrl)
-
-    spreadsheetId = "1yhqjAVuo_nlByP4G6zGfQ3gF3fz3IR4FXnqaN93OVUo"
-    test_range = "AB - Tests Live!A2:M"
-    prod_range = "AB - Prod Support!A2:M"
-
-    test_results = service.spreadsheets().values().get(
-        spreadsheetId=spreadsheetId, range=test_range).execute()
-    test_values = test_results.get('values', [])
-
-    prod_results = service.spreadsheets().values().get(
-        spreadsheetId=spreadsheetId, range=prod_range).execute()
-    prod_values = prod_results.get('values', [])
-
-    return test_values + prod_values
+    """ Combine tests live and prod support sheet """
+    active = build_sheet("AB - Tests Live!A2:M")
+    product = build_sheet("AB - Prod Support!A2:M")
+    return active + product
 
 def get_active_tests():
     """ Return all active tests """
-    values = get_tests()
+    values = build_sheet("AB - Tests Live!A2:M")
     active_tests = []
     for row in values:
         try:
@@ -89,7 +55,7 @@ def get_active_tests():
 
 def get_active_psupport():
     """ Return all active product support tests """
-    values = get_product_tests()
+    values = build_sheet("AB - Prod Support!A2:M")
     active_psupport = []
     for row in values:
         try:
@@ -119,9 +85,7 @@ def get_active_ccp():
 
 def get_active_reload():
     """ Return all active tests that force a reload """
-    tests = get_tests()
-    prod_tests = get_product_tests()
-    merged_list = tests + prod_tests
+    merged_list = get_all_tests()
     active_reload = []
     for row in merged_list:
         try:
@@ -136,9 +100,7 @@ def get_active_reload():
 
 def get_by_page_type(page_type):
     """ Return all active tests by page type from the A/B active sheet """
-    tests = get_tests()
-    prod_tests = get_product_tests()
-    merged_list = tests + prod_tests
+    merged_list = get_all_tests()
     active_page = []
     for row in merged_list:
         try:
@@ -161,9 +123,7 @@ def get_by_EFEAT(efeat_num):
     efeat_string = "EFEAT-" + efeat_num
     found = False
 
-    tests = get_tests()
-    prod_tests = get_product_tests()
-    merged_list = tests + prod_tests
+    merged_list = get_all_tests()
     for row in merged_list:
         try:
             if efeat_string in row:

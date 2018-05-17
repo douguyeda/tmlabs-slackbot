@@ -43,7 +43,7 @@ def get_product_tests():
     service = discovery.build('sheets', 'v4', http=http, cache_discovery=False, discoveryServiceUrl=discoveryUrl)
 
     spreadsheetId = '1yhqjAVuo_nlByP4G6zGfQ3gF3fz3IR4FXnqaN93OVUo'
-    rangeName = 'AB - Prod Support!A2:F'
+    rangeName = 'AB - Prod Support!A2:M'
     result = service.spreadsheets().values().get(
         spreadsheetId=spreadsheetId, range=rangeName).execute()
     values = result.get('values', [])
@@ -73,7 +73,7 @@ def get_active_psupport():
     active_psupport = []
     for row in values:
         try:
-            if row[5] == "x":
+            if row[9] == "x":
                 active_psupport.append("https://contegixapp1.livenation.com/jira/browse/" + row[0] + " " + row[1])
         except IndexError:
             pass

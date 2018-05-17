@@ -99,9 +99,11 @@ def get_active_ccp():
 
 def get_active_reload():
     """ Return all active tests that force a reload """
-    values = get_tests()
+    tests = get_tests()
+    prod_tests = get_product_tests()
+    merged_list = tests + prod_tests
     active_reload = []
-    for row in values:
+    for row in merged_list:
         try:
             if row[6] == "x" and row[9] == "x":
                 active_reload.append("https://contegixapp1.livenation.com/jira/browse/" + row[0] + " " + row[1])

@@ -20,8 +20,7 @@ def get_tests():
     """ Grab all the values from AB - Tests Live sheet """
     credentials = get_credentials()
     http = credentials.authorize(httplib2.Http())
-    discoveryUrl = ('https://sheets.googleapis.com/$discovery/rest?'
-                    'version=v4')
+    discoveryUrl = ('https://sheets.googleapis.com/$discovery/rest?version=v4')
     service = discovery.build('sheets', 'v4', http=http, cache_discovery=False,
                               discoveryServiceUrl=discoveryUrl)
 
@@ -51,6 +50,27 @@ def get_product_tests():
     if not values:
         return "No values found in spreadsheet"
     return values
+
+def get_all_tests():
+    """ Grab all the values from AB - Test Live and AB - Prod Support sheets  """
+    credentials = get_credentials()
+    http = credentials.authorize(httplib2.Http())
+    discoveryUrl = ('https://sheets.googleapis.com/$discovery/rest?version=v4')
+    service = discovery.build('sheets', 'v4', http=http, cache_discovery=False, discoveryServiceUrl=discoveryUrl)
+
+    spreadsheetId = "1yhqjAVuo_nlByP4G6zGfQ3gF3fz3IR4FXnqaN93OVUo"
+    test_range = "AB - Tests Live!A2:M"
+    prod_range = "AB - Prod Support!A2:M"
+
+    test_results = service.spreadsheets().values().get(
+        spreadsheetId=spreadsheetId, range=test_range).execute()
+    test_values = test_results.get('values', [])
+
+    prod_results = service.spreadsheets().values().get(
+        spreadsheetId=spreadsheetId, range=prod_range).execute()
+    prod_values = prod_results.get('values', [])
+
+    return test_values + prod_values
 
 def get_active_tests():
     """ Return all active tests """
@@ -84,9 +104,7 @@ def get_active_psupport():
 
 def get_active_ccp():
     """ Return all active ccp tests """
-    tests = get_tests()
-    prod_tests = get_product_tests()
-    merged_list = tests + prod_tests
+    merged_list = get_all_tests()
     active_ccp = []
     for row in merged_list:
         try:

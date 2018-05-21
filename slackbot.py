@@ -38,7 +38,8 @@ def handle_command(command, channel):
     commands["product"] = "Returns all active Product Support Tests"
     commands["ccp"] = "Returns all active CCP EDP tests"
     commands["reload"] = "Returns all tests that cause the page to reload"
-    commands["Search by page type"] = "Type a page type such as 'ADP' to show all active tests on that page type"
+    commands["pagetypes"] = "Returns a list of page types you can search by"
+    commands["Search by page type"] = "Type a page type such as 'ADP' or 'RCO' to show all active tests on that page type"
     commands["Search by EFEAT####"] = "Type the EFEAT#### such as '5927' to bring up information about that test"
 
     products = ["adp", "home", "rco", "identity", "tmr checkout", "discovery", "mobile app"]
@@ -55,6 +56,8 @@ def handle_command(command, channel):
         response = get_active_ccp()
     elif command.startswith("reload"):
         response= get_active_reload()
+    elif command.startswith("pagetypes"):
+        response = "\n".join(products)
     elif command in products:
         response = get_by_page_type(command)
     elif command.isdigit():

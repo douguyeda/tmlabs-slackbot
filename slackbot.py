@@ -15,6 +15,11 @@ starterbot_id = None
 
 RTM_READ_DELAY = 1 # 1 second delay between reading from RTM
 
+def get_doge():
+    """ wow """
+    filehandle = open("doge.txt", "r")
+    return filehandle.read()
+
 def parse_bot_commands(slack_events):
     """
     Listens for input from the user
@@ -62,6 +67,8 @@ def handle_command(command, channel):
         response = get_by_page_type(command)
     elif command.isdigit():
         response = get_by_EFEAT(command)
+    elif command.startswith("doge"):
+        response = get_doge()
 
     # Sends the response back to the channel
     slack_client.api_call(

@@ -67,7 +67,7 @@ def handle_command(command, channel):
         response = get_by_page_type(command)
     elif command.isdigit():
         response = get_by_EFEAT(command)
-    elif command.startswith("doge"):
+    elif command.startswith("doge") or command.startswith("wow"):
         response = get_doge()
 
     # Sends the response back to the channel

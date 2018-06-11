@@ -48,7 +48,7 @@ def get_active_tests():
                 active_tests.append("https://contegixapp1.livenation.com/jira/browse/" + row[0] + " " + row[1])
         except IndexError:
             pass
-        
+
     if not active_tests:
         return "No active tests found"
     return 'All active tests:\n' + '\n'.join(active_tests)
@@ -117,7 +117,7 @@ def get_by_EFEAT(efeat_num):
     """ Return the details of a ticket by EFEAT#### """
     # quick check to see if valid EFEAT# has been entered
     if len(efeat_num) != 4:
-        return "Invalid EFEAT# entered: " + efeat_num
+        return "Invalid EFEAT# entered, EFEAT# must be 4 numbers long"
 
     efeat = OrderedDict()
     efeat_string = "EFEAT-" + efeat_num

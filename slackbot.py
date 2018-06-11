@@ -47,7 +47,7 @@ def handle_command(command, channel):
     commands["Search by page type"] = "Type a page type such as 'ADP' or 'RCO' to show all active tests on that page type"
     commands["Search by EFEAT####"] = "Type the EFEAT#### such as '5927' to bring up information about that test"
 
-    products = ["adp", "home", "rco", "identity", "tmr checkout", "discovery", "mobile app"]
+    pagetypes = ["adp", "home", "rco", "identity", "tmr checkout", "discovery", "mobile app"]
 
     default_response = "Beep Boop, here are a list of commands:\n" + '\n'.join("%s = %r" % (key, val) for (key, val) in commands.iteritems())
     command = command.lower()
@@ -60,10 +60,10 @@ def handle_command(command, channel):
     elif command.startswith("ccp"):
         response = get_active_ccp()
     elif command.startswith("reload"):
-        response= get_active_reload()
+        response = get_active_reload()
     elif command.startswith("pagetypes"):
-        response = "\n".join(products)
-    elif command in products:
+        response = "\n".join(pagetypes)
+    elif command in pagetypes:
         response = get_by_page_type(command)
     elif command.isdigit():
         response = get_by_EFEAT(command)
@@ -83,9 +83,9 @@ if __name__ == "__main__":
         # Read bot's user ID by calling Web API method `auth.test`
         starterbot_id = slack_client.api_call("auth.test")["user_id"]
         while True:
-            command, channel = parse_bot_commands(slack_client.rtm_read())
-            if command:
-                handle_command(command, channel)
+            rtm_command, rtm_channel = parse_bot_commands(slack_client.rtm_read())
+            if rtm_command:
+                handle_command(rtm_command, rtm_channel)
             time.sleep(RTM_READ_DELAY)
     else:
         print "Connection failed. Exception traceback printed above."

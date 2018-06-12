@@ -43,7 +43,7 @@ def handle_command(command, channel):
     commands["pagetypes"] = "Returns a list of page types you can search by"
     commands["Search by page type"] = "Type a page type such as 'ADP' or 'RCO' to show all active tests on that page type"
     commands["Search by EFEAT####"] = "Type the EFEAT#### such as '5927' to bring up information about that test"
-    commands["Search by SIMA First Name"] = "Type in SIMA first name to find all active tests tagged to that analyst"
+    commands["Search by analyst first mame"] = "Type in analyst first name to find all active tests tagged to that analyst"
 
     # List of page types to search by
     pagetypes = ["adp", "ccp edp", "confirmation", "discovery", "home", "identity", "mobile app", "rco", "srp", "tmr checkout"]

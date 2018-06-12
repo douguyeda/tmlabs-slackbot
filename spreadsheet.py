@@ -110,7 +110,7 @@ def get_by_page_type(page_type):
             pass
 
     if not active_page:
-        return 'No tests found with page type: ' + page_type
+        return 'No active tests found with page type: ' + page_type
     return "All active %s tests\n %s" % (page_type, '\n'.join(active_page))
 
 def get_by_EFEAT(efeat_num):
@@ -155,5 +155,5 @@ def get_by_SIMA(analyst):
             pass
 
     if not active_tests:
-        return 'No tests found tagged with analyst: ' + analyst
-    return "All tests tagged with analyst: %s\n %s" % (analyst, '\n'.join(active_tests))
+        return 'No active tests found tagged with analyst: ' + analyst
+    return "All active tests tagged with analyst: %s\n %s" % (analyst, '\n'.join(active_tests))

@@ -40,7 +40,7 @@ def get_all_tests():
 
 def get_active_tests():
     """ Return all active tests """
-    values = build_sheet("AB - Tests Live!A2:M")
+    values = build_sheet("AB - Tests Live!A2:J")
     active_tests = []
     for row in values:
         try:
@@ -55,7 +55,7 @@ def get_active_tests():
 
 def get_active_psupport():
     """ Return all active product support tests """
-    values = build_sheet("AB - Prod Support!A2:M")
+    values = build_sheet("AB - Prod Support!A2:J")
     active_psupport = []
     for row in values:
         try:

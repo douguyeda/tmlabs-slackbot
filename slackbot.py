@@ -41,13 +41,14 @@ def handle_command(command, channel):
     commands = OrderedDict()
     commands["active"] = "Returns all active tests"
     commands["product"] = "Returns all active Product Support Tests"
-    commands["ccp"] = "Returns all active CCP EDP tests"
+    commands["ccp"] = "Returns all active CCP tests"
     commands["reload"] = "Returns all tests that cause the page to reload"
     commands["pagetypes"] = "Returns a list of page types you can search by"
     commands["Search by page type"] = "Type a page type such as 'ADP' or 'RCO' to show all active tests on that page type"
     commands["Search by EFEAT####"] = "Type the EFEAT#### such as '5927' to bring up information about that test"
-
-    pagetypes = ["adp", "home", "rco", "ccp edp", "identity", "srp", "confirmation", "tmr checkout", "discovery", "mobile app"]
+    
+    pagetypes = ["adp", "ccp edp", "confirmation", "discovery", "home", "identity", "mobile app", "rco", "srp", "tmr checkout"]
+    pagetypes_response = "Type any of the below page types to search by!\n" + "\n".join(pagetypes)
 
     default_response = "Beep Boop, here are a list of commands:\n" + '\n'.join("%s = %r" % (key, val) for (key, val) in commands.iteritems())
     command = command.lower()
@@ -62,7 +63,7 @@ def handle_command(command, channel):
     elif command.startswith("reload"):
         response = get_active_reload()
     elif command.startswith("pagetypes"):
-        response = "\n".join(pagetypes)
+        response = pagetypes_response
     elif command in pagetypes:
         response = get_by_page_type(command)
     elif command.isdigit():

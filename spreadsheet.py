@@ -111,7 +111,7 @@ def get_by_page_type(page_type):
 
     if not active_page:
         return 'No tests found with page type: ' + page_type
-    return 'All active ' + page_type + ' tests:\n' + '\n'.join(active_page)
+    return "All active %s tests\n %s" % (page_type, '\n'.join(active_page))
 
 def get_by_EFEAT(efeat_num):
     """ Return the details of a ticket by EFEAT#### """
@@ -142,3 +142,18 @@ def get_by_EFEAT(efeat_num):
     if found is False:
         return efeat_string + " not found"
     return json.dumps(efeat, indent=0)[2:-2]
+
+def get_by_SIMA(analyst):
+    """ Return all active tests by SIMA first name from the A/B active sheet """
+    values = build_sheet("AB - Tests Live!A2:M")
+    active_tests = []
+    for row in values:
+        try:
+            if row[9] == "x" and analyst in row[12].lower():
+                active_tests.append("https://contegixapp1.livenation.com/jira/browse/" + row[0] + " " + row[1])
+        except IndexError:
+            pass
+
+    if not active_tests:
+        return 'No tests found tagged with analyst: ' + analyst
+    return "All tests tagged with analyst: %s\n %s" % (analyst, '\n'.join(active_tests))

@@ -6,7 +6,7 @@ https://github.com/michaelkrukov/heroku-python-script
 import time
 from collections import OrderedDict
 from slackclient import SlackClient
-from spreadsheet import get_active_tests, get_active_psupport, get_active_ccp, get_active_reload, get_by_page_type, get_by_EFEAT
+from spreadsheet import get_active_tests, get_active_psupport, get_active_ccp, get_active_reload, get_by_page_type, get_by_EFEAT, get_by_SIMA
 
 # instantiate Slack client
 slack_client = SlackClient('xoxb-337102695590-V3oUU20y2t20t4lhz4Tc7MUC')
@@ -33,11 +33,8 @@ def parse_bot_commands(slack_events):
 
 
 def handle_command(command, channel):
-    """
-    Execute the command by calling Google Sheets API
-    returns:
-        query searched by user in the slack channel
-    """
+    """ Execute command by calling Google Sheets API and returns query searched by user in the slack channel """
+
     commands = OrderedDict()
     commands["active"] = "Returns all active tests"
     commands["product"] = "Returns all active Product Support Tests"
@@ -46,9 +43,14 @@ def handle_command(command, channel):
     commands["pagetypes"] = "Returns a list of page types you can search by"
     commands["Search by page type"] = "Type a page type such as 'ADP' or 'RCO' to show all active tests on that page type"
     commands["Search by EFEAT####"] = "Type the EFEAT#### such as '5927' to bring up information about that test"
-    
+    commands["Search by SIMA First Name"] = "Type in SIMA first name to find all active tests tagged to that analyst"
+
+    # List of page types to search by
     pagetypes = ["adp", "ccp edp", "confirmation", "discovery", "home", "identity", "mobile app", "rco", "srp", "tmr checkout"]
     pagetypes_response = "Type any of the below page types to search by!\n" + "\n".join(pagetypes)
+
+    # List of analysts to search by
+    analysts = ["randy", "glen", "amber", "lily", "danielle", "michelle", "christine"]
 
     default_response = "Beep Boop, here are a list of commands:\n" + '\n'.join("%s = %r" % (key, val) for (key, val) in commands.iteritems())
     command = command.lower()
@@ -68,6 +70,8 @@ def handle_command(command, channel):
         response = get_by_page_type(command)
     elif command.isdigit():
         response = get_by_EFEAT(command)
+    elif command in analysts:
+        response = get_by_SIMA(command)
     elif command.startswith("doge") or command.startswith("wow"):
         response = get_doge()
 

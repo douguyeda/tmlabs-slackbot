@@ -57,7 +57,7 @@ def handle_command(command, channel):
         response = get_active_tests()
     elif command.startswith("product"):
         response = get_active_psupport()
-    elif command.startswith("ccp"):
+    elif command == "ccp":
         response = get_active_ccp()
     elif command.startswith("reload"):
         response = get_active_reload()

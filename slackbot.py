@@ -47,7 +47,7 @@ def handle_command(command, channel):
     commands["Search by page type"] = "Type a page type such as 'ADP' or 'RCO' to show all active tests on that page type"
     commands["Search by EFEAT####"] = "Type the EFEAT#### such as '5927' to bring up information about that test"
 
-    pagetypes = ["adp", "home", "rco", "identity", "tmr checkout", "discovery", "mobile app"]
+    pagetypes = ["adp", "home", "rco", "ccp edp", "identity", "srp", "confirmation", "tmr checkout", "discovery", "mobile app"]
 
     default_response = "Beep Boop, here are a list of commands:\n" + '\n'.join("%s = %r" % (key, val) for (key, val) in commands.iteritems())
     command = command.lower()

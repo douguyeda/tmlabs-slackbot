@@ -45,7 +45,7 @@ def get_active_tests():
     for row in values:
         try:
             if row[9] == "x":
-                active_tests.append("https://contegixapp1.livenation.com/jira/browse/{efeat} {name}".format(efeat=row[0], name=row[1]))
+                active_tests.append("https://contegixapp1.livenation.com/jira/browse/{0} {1}".format(row[0], row[1]))
         except IndexError:
             pass
 
@@ -60,7 +60,7 @@ def get_active_psupport():
     for row in values:
         try:
             if row[9] == "x":
-                active_psupport.append("https://contegixapp1.livenation.com/jira/browse/{efeat} {name}".format(efeat=row[0], name=row[1]))
+                active_psupport.append("https://contegixapp1.livenation.com/jira/browse/{0} {1}".format(row[0], row[1]))
         except IndexError:
             pass
 
@@ -75,7 +75,7 @@ def get_active_ccp():
     for row in merged_list:
         try:
             if row[5] == "x" and row[9] == "x":
-                active_ccp.append("https://contegixapp1.livenation.com/jira/browse/{efeat} {name}".format(efeat=row[0], name=row[1]))
+                active_ccp.append("https://contegixapp1.livenation.com/jira/browse/{0} {1}".format(row[0], row[1]))
         except IndexError:
             pass
 
@@ -90,7 +90,7 @@ def get_active_reload():
     for row in merged_list:
         try:
             if row[6] == "x" and row[9] == "x":
-                active_reload.append("https://contegixapp1.livenation.com/jira/browse/{efeat} {name}".format(efeat=row[0], name=row[1]))
+                active_reload.append("https://contegixapp1.livenation.com/jira/browse/{0} {1}".format(row[0], row[1]))
         except IndexError:
             pass
 
@@ -105,7 +105,7 @@ def get_by_page_type(page_type):
     for row in merged_list:
         try:
             if row[9] == "x" and row[10].lower() == page_type:
-                active_page.append("https://contegixapp1.livenation.com/jira/browse/{efeat} {name}".format(efeat=row[0], name=row[1]))
+                active_page.append("https://contegixapp1.livenation.com/jira/browse/{0} {1}".format(row[0], row[1]))
         except IndexError:
             pass
 
@@ -150,7 +150,7 @@ def get_by_SIMA(analyst):
     for row in values:
         try:
             if row[9] == "x" and analyst in row[12].lower():
-                active_tests.append("https://contegixapp1.livenation.com/jira/browse/{efeat} {name}".format(efeat=row[0], name=row[1]))
+                active_tests.append("https://contegixapp1.livenation.com/jira/browse/{0} {1}".format(row[0], row[1]))
         except IndexError:
             pass
 

@@ -39,10 +39,10 @@ def handle_command(command, channel):
     commands["active"] = "Returns all active tests"
     commands["product"] = "Returns all active Product Support Tests"
     commands["ccp"] = "Returns all active CCP tests"
-    commands["reload"] = "Returns all tests that cause the page to reload"
+    commands["reload"] = "Returns all active tests which reload the page"
     commands["pagetypes"] = "Returns a list of page types you can search by"
-    commands["Search by page type"] = "Type a page type such as 'ADP' or 'RCO' to show all active tests on that page type"
-    commands["Search by EFEAT####"] = "Type the EFEAT#### such as '5927' to bring up information about that test"
+    commands["Search by page type"] = "Type a page type such as 'ADP' or 'RCO', to show all active tests of that page type"
+    commands["Search by EFEAT####"] = "Type in the EFEAT#### such as '5927', to bring up information about that test"
     commands["Search by analyst first name"] = "Type in an analyst's first name to find all active tests tagged to that analyst"
 
     # List of page types to search by

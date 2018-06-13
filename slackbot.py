@@ -50,7 +50,7 @@ def handle_command(command, channel):
     pagetypes_response = "Type any of the below page types to search by!\n" + "\n".join(pagetypes)
 
     # List of analysts to search by
-    analysts = ["randy", "glen", "amber", "lily", "danielle", "michelle", "christine"]
+    analysts = ["randy", "glen", "amber", "lily", "danielle", "michelle", "christine", "vivian"]
 
     default_response = "Beep Boop, here are a list of commands:\n" + '\n'.join("%s = %r" % (key, val) for (key, val) in commands.iteritems())
     command = command.lower()

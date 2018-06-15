@@ -1,7 +1,6 @@
 # Ticketmaster AB Bot
 Ticketmaster slackbot that returns all active AB Tests
 
-
 ### Prerequisites
 slackclient==1.2.1
 Requests==2.18.4

@@ -6,6 +6,11 @@ Date: 6/13/2018
 from collections import OrderedDict
 from spreadsheet import get_active_tests, get_active_psupport, get_active_ccp, get_active_reload, get_by_page_type, get_by_EFEAT, get_by_SIMA
 
+def get_doge():
+    """ wow """
+    filehandle = open("doge.txt", "r")
+    return filehandle.read()
+
 class Slackbot(object):
     """ Slackbot main class """
     def __init__(self, slack_client=None):
@@ -26,6 +31,7 @@ class Slackbot(object):
         self.pagetypes = ["adp", "ccp edp", "confirmation", "discovery", "home", "identity", "mobile app", "rco", "srp", "tmr checkout"]
         self.pagetypes_response = "Type any of the below page types to search by!\n" + "\n".join(self.pagetypes)
         self.analysts = ["randy", "glen", "amber", "lily", "danielle", "michelle", "christine", "vivian"]
+        self.doge = get_doge()
 
     def connect(self):
         """ Connect to RTM feed """
@@ -58,10 +64,8 @@ class Slackbot(object):
             response = get_by_EFEAT(command)
         elif command in self.analysts:
             response = get_by_SIMA(command)
-        """
         elif command.startswith("doge") or command.startswith("wow"):
-            response = self.doge()
-        """
+            response = self.doge
         return response
     
     def send_message(self, message, channel):

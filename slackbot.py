@@ -24,11 +24,9 @@ class Slackbot(object):
         self.default_response = "Beep Boop, here are a list of commands:\n" + '\n'.join("%s = %r" % (key, val) for (key, val) in self.commands.iteritems())
 
         self.pagetypes = ["adp", "ccp edp", "confirmation", "discovery", "home", "identity", "mobile app", "rco", "srp", "tmr checkout"]
+        self.pagetypes_response = "Type any of the below page types to search by!\n" + "\n".join(self.pagetypes)
         self.analysts = ["randy", "glen", "amber", "lily", "danielle", "michelle", "christine", "vivian"]
 
-        filehandle = open("doge.txt", "r")
-        self.doge = filehandle.read()
-    
     def connect(self):
         """ Connect to RTM feed """
         self.slack_client.rtm_connect(with_team_state=False)
@@ -53,15 +51,17 @@ class Slackbot(object):
         elif command.startswith("reload"):
             response = get_active_reload()
         elif command.startswith("pagetypes"):
-            response = "Type any of the below page types to search by!\n" + "\n".join(self.pagetypes)
+            response = self.pagetypes_response
         elif command in self.pagetypes:
             response = get_by_page_type(command)
         elif command.isdigit():
             response = get_by_EFEAT(command)
         elif command in self.analysts:
             response = get_by_SIMA(command)
+        """
         elif command.startswith("doge") or command.startswith("wow"):
             response = self.doge()
+        """
         return response
     
     def send_message(self, message, channel):

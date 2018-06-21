@@ -81,7 +81,7 @@ def get_active_ccp():
 
     if not active_ccp:
         return "No active ccp tests found"
-    return 'All active CCP EDP tests:\n' + '\n'.join(active_ccp)
+    return 'All active CCP tests:\n' + '\n'.join(active_ccp)
 
 def get_active_reload():
     """ Return all active tests that force a reload """
@@ -157,3 +157,8 @@ def get_by_SIMA(analyst):
     if not active_tests:
         return 'No active tests found tagged with analyst: ' + analyst
     return "All active tests tagged with analyst: {0}\n {1}".format(analyst, '\n'.join(active_tests))
+
+def get_doge():
+    """ wow """
+    filehandle = open("doge.txt", "r")
+    return filehandle.read()

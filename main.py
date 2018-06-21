@@ -4,8 +4,8 @@ Author: Douglas Uyeda
 https://github.com/michaelkrukov/heroku-python-script
 """
 import time
-from slackbot import Slackbot
 from slackclient import SlackClient
+from slackbot import Slackbot
 
 # instantiate Slack client
 slack_client = SlackClient('xoxb-337102695590-V3oUU20y2t20t4lhz4Tc7MUC')

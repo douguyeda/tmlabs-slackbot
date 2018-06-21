@@ -4,12 +4,7 @@ Author: Douglas Uyeda
 Date: 6/13/2018
 """
 from collections import OrderedDict
-from spreadsheet import get_active_tests, get_active_psupport, get_active_ccp, get_active_reload, get_by_page_type, get_by_EFEAT, get_by_SIMA
-
-def get_doge():
-    """ wow """
-    filehandle = open("doge.txt", "r")
-    return filehandle.read()
+from spreadsheet import get_active_tests, get_active_psupport, get_active_ccp, get_active_reload, get_by_page_type, get_by_EFEAT, get_by_SIMA, get_doge
 
 class Slackbot(object):
     """ Slackbot main class """

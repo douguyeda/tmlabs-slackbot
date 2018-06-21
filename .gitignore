@@ -2,3 +2,4 @@
 .pylintrc
 test.py
 client_secret.json
+.vscode

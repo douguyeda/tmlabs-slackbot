@@ -3,12 +3,13 @@ Main slackbot program
 Author: Douglas Uyeda
 https://github.com/michaelkrukov/heroku-python-script
 """
+import os
 import time
 from slackclient import SlackClient
 from slackbot import Slackbot
 
 # instantiate Slack client
-slack_client = SlackClient('xoxb-337102695590-V3oUU20y2t20t4lhz4Tc7MUC')
+slack_client = SlackClient(os.environ.get('SLACK_BOT_TOKEN'))
 # 1 second delay between reading from RTM
 RTM_READ_DELAY = 1
 

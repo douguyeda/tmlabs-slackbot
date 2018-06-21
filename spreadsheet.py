@@ -4,6 +4,7 @@ Author: Douglas Uyeda
 'cache_discovery=False' removes ghsheets error
 https://stackoverflow.com/questions/40154672/importerror-file-cache-is-unavailable-when-using-python-client-for-google-ser
 """
+import os
 import json
 from collections import OrderedDict
 import httplib2
@@ -13,7 +14,9 @@ from apiclient import discovery
 def get_credentials():
     """ Get valid credentials to use """
     scope = ['https://www.googleapis.com/auth/spreadsheets.readonly']
-    creds = ServiceAccountCredentials.from_json_keyfile_name('client_secret.json', scope)
+    credentials_raw = os.environ.get('GOOGLE_APPLICATION_CREDENTIALS')
+    service_account_info = json.loads(credentials_raw)
+    creds = ServiceAccountCredentials.from_json_keyfile_dict(service_account_info, scope)
     return creds
 
 def build_sheet(range_name):
@@ -162,3 +165,5 @@ def get_doge():
     """ wow """
     filehandle = open("doge.txt", "r")
     return filehandle.read()
+
+print get_active_tests()

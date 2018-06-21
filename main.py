@@ -16,7 +16,7 @@ RTM_READ_DELAY = 1
 if __name__ == "__main__":
     slackbot = Slackbot(slack_client)
     slackbot.connect()
-    print "Ticketmaster AB Bot connected!"
+    print "TM Labs AB Bot connected!"
     while True:
         rtm_command, rtm_channel = slackbot.parse_commands()
         if rtm_command:

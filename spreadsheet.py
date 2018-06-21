@@ -165,5 +165,3 @@ def get_doge():
     """ wow """
     filehandle = open("doge.txt", "r")
     return filehandle.read()
-
-print get_active_tests()

@@ -1,14 +1,15 @@
 # Ticketmaster AB Bot
-Ticketmaster slackbot that returns all active AB Tests
+TM Labs slackbot which returns information about active tests.
+More information can be found here: https://contegixapp1.livenation.com/confluence/display/ECOM/AB+Slackbot
 
-### Prerequisites
-slackclient==1.2.1
-Requests==2.18.4
-google-api-python-client==1.6.6
-google-auth-httplib2==0.0.3
-httplib2==0.11.3
-oauth2client==4.1.2
-websocket-client==0.47.0
+## Prerequisites
+*slackclient==1.2.1
+*Requests==2.18.4
+*google-api-python-client==1.6.6
+*google-auth-httplib2==0.0.3
+*httplib2==0.11.3
+*oauth2client==4.1.2
+*websocket-client==0.47.0
 
 ## Authors
 Douglas Uyeda

@@ -7,6 +7,7 @@ https://stackoverflow.com/questions/40154672/importerror-file-cache-is-unavailab
 import os
 import json
 from collections import OrderedDict
+from datetime import datetime, timedelta
 import httplib2
 from oauth2client.service_account import ServiceAccountCredentials
 from apiclient import discovery
@@ -114,13 +115,13 @@ def get_by_page_type(page_type):
 
     if not active_page:
         return 'No active tests found with page type: ' + page_type
-    return "All active {0} tests\n {1}".format(page_type, '\n'.join(active_page))
+    return "All active {0} tests\n{1}".format(page_type, '\n'.join(active_page))
 
 def get_by_EFEAT(efeat_num):
     """ Return the details of a ticket by EFEAT#### """
     # quick check to see if valid EFEAT# has been entered
     if len(efeat_num) != 4:
-        return "Invalid EFEAT# entered, EFEAT# must be 4 numbers long"
+        return "Invalid EFEAT# entered.  Please make sure the EFEAT# is 4 digits long"
 
     efeat = OrderedDict()
     efeat_string = "EFEAT-" + efeat_num
@@ -146,20 +147,30 @@ def get_by_EFEAT(efeat_num):
         return efeat_string + " not found"
     return json.dumps(efeat, indent=0)[2:-2]
 
-def get_by_SIMA(analyst):
-    """ Return all active tests by SIMA first name from the A/B active sheet """
-    values = build_sheet("AB - Tests Live!A2:M")
-    active_tests = []
-    for row in values:
+def get_by_recent(days):
+    """ Return all active tests launched in the past xx days """
+    if not days.isdigit():
+        return "Invalid day passed.  Make sure you entered an integer"
+
+    days = int(days)
+    if days > 30:
+        return "Max amount of days is 30.  Please try entering a number less than 30."
+
+    merged_list = get_all_tests()
+    five_days = datetime.today() - timedelta(days=days)
+    recent_tests = []
+
+    for row in merged_list:
         try:
-            if row[9] == "x" and analyst in row[12].lower():
-                active_tests.append("https://contegixapp1.livenation.com/jira/browse/{0} {1}".format(row[0], row[1]))
+            launch_date = datetime.strptime(row[7], '%m/%d/%Y')
+            if row[9] == "x" and launch_date > five_days:
+                recent_tests.append("{0} https://contegixapp1.livenation.com/jira/browse/{1} {2}".format(row[7], row[0], row[1]))
         except IndexError:
             pass
 
-    if not active_tests:
-        return 'No active tests found tagged with analyst: ' + analyst
-    return "All active tests tagged with analyst: {0}\n {1}".format(analyst, '\n'.join(active_tests))
+    if not recent_tests:
+        return "No active tests launched in the past {0} days".format(days)
+    return "All active tests launched in the past {0} days:\n{1}".format(days, '\n'.join(recent_tests))
 
 def get_doge():
     """ wow """

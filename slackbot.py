@@ -4,7 +4,7 @@ Author: Douglas Uyeda
 Date: 6/13/2018
 """
 from collections import OrderedDict
-from spreadsheet import get_active_tests, get_active_psupport, get_active_ccp, get_active_reload, get_by_page_type, get_by_EFEAT, get_by_SIMA, get_doge
+from spreadsheet import get_active_tests, get_active_psupport, get_active_ccp, get_active_reload, get_by_page_type, get_by_EFEAT, get_by_recent, get_doge
 
 class Slackbot(object):
     """ Slackbot main class """
@@ -19,19 +19,18 @@ class Slackbot(object):
             ("pagetypes", "Returns a list of page types you can search by"),
             ("Search by page type", "Type a page type, such as 'ADP' or 'RCO', to show all active tests of that page type"),
             ("Search by EFEAT####", "Type in the EFEAT####, such as '5927', to bring up information about that test"),
-            ("Search by analyst first name", "Type in an analyst's first name to find all active tests tagged to that analyst")
+            ("Search by recently launched", "Type in recent day#, such as 'recent 7', to display all active tests launched in the past 7 days"),
         ])
         self.default_response = "Beep Boop, here are a list of commands:\n" + '\n'.join("%s = %r" % (key, val) for (key, val) in self.commands.iteritems())
 
         self.pagetypes = ["adp", "ccp edp", "confirmation", "discovery", "home", "identity", "mobile app", "rco", "srp", "tmr checkout"]
         self.pagetypes_response = "Type any of the below page types to search by!\n" + "\n".join(self.pagetypes)
-        self.analysts = ["randy", "glen", "amber", "lily", "danielle", "michelle", "christine", "vivian"]
         self.doge = get_doge()
 
     def connect(self):
         """ Connect to RTM feed """
         self.slack_client.rtm_connect(with_team_state=False)
-    
+
     def parse_commands(self):
         """ Listen for messages and return the message and channel """
         for event in self.slack_client.rtm_read():
@@ -57,12 +56,13 @@ class Slackbot(object):
             response = get_by_page_type(command)
         elif command.isdigit():
             response = get_by_EFEAT(command)
-        elif command in self.analysts:
-            response = get_by_SIMA(command)
+        elif command.startswith("recent"):
+            command = command.split()
+            response = get_by_recent(command[1])
         elif command.startswith("doge") or command.startswith("wow"):
             response = self.doge
         return response
-    
+
     def send_message(self, message, channel):
         """ Sends the response back to the channel """
         self.slack_client.api_call(

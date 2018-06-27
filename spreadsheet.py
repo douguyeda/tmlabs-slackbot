@@ -157,13 +157,13 @@ def get_by_recent(days):
         return "Max amount of days is 30.  Please try entering a number less than 30."
 
     merged_list = get_all_tests()
-    five_days = datetime.today() - timedelta(days=days)
+    days_offset = datetime.today() - timedelta(days=days)
     recent_tests = []
 
     for row in merged_list:
         try:
             launch_date = datetime.strptime(row[7], '%m/%d/%Y')
-            if row[9] == "x" and launch_date > five_days:
+            if row[9] == "x" and launch_date > days_offset:
                 recent_tests.append("{0} https://contegixapp1.livenation.com/jira/browse/{1} {2}".format(row[7], row[0], row[1]))
         except IndexError:
             pass

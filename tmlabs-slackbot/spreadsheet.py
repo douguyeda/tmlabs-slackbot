@@ -174,5 +174,7 @@ def get_by_recent(days):
 
 def get_doge():
     """ wow """
-    filehandle = open("doge.txt", "r")
+    filehandle = open("tmlabs-slackbot/doge.txt", "r")
     return filehandle.read()
+
+print get_doge()

@@ -1,1 +1,1 @@
-worker: python main.py
+worker: python tmlabs-slackbot/main.py

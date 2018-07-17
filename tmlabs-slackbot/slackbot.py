@@ -23,7 +23,7 @@ class Slackbot(object):
         ])
         self.default_response = "Beep Boop, here are a list of commands:\n" + '\n'.join("%s = %r" % (key, val) for (key, val) in self.commands.iteritems())
 
-        self.pagetypes = ["adp", "ccp edp", "confirmation", "discovery", "home", "identity", "mobile app", "rco", "srp", "tmr checkout"]
+        self.pagetypes = ["adp", "ccp edp", "confirmation", "discovery", "home", "identity", "mobile app", "rco", "srp", "survey", "tmr checkout"]
         self.pagetypes_response = "Type any of the below page types to search by!\n" + "\n".join(self.pagetypes)
         self.doge = get_doge()
 

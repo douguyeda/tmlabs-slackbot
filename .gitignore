@@ -3,3 +3,4 @@
 test.py
 client_secret.json
 .vscode
+.DS_Store

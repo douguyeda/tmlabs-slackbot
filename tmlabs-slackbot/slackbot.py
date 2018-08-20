@@ -58,8 +58,6 @@ class Slackbot(object):
             response = get_by_EFEAT(command)
         elif command.startswith("recent"):
             command = command.split()
-            if len(command) == 1:
-                response = get_by_recent('7')
             response = get_by_recent(command[len(command)-1])
         elif command.startswith("doge") or command.startswith("wow"):
             response = self.doge

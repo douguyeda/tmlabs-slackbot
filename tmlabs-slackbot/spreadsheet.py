@@ -74,9 +74,9 @@ def get_active_psupport():
 
 def get_active_ccp():
     """ Return all active ccp tests """
-    merged_list = get_all_tests()
+    all_tests = get_all_tests()
     active_ccp = []
-    for row in merged_list:
+    for row in all_tests:
         try:
             if row[5] == "x" and row[9] == "x":
                 active_ccp.append("https://contegixapp1.livenation.com/jira/browse/{0} {1}".format(row[0], row[1]))
@@ -89,9 +89,9 @@ def get_active_ccp():
 
 def get_active_reload():
     """ Return all active tests that force a reload """
-    merged_list = get_all_tests()
+    all_tests = get_all_tests()
     active_reload = []
-    for row in merged_list:
+    for row in all_tests:
         try:
             if row[6] == "x" and row[9] == "x":
                 active_reload.append("https://contegixapp1.livenation.com/jira/browse/{0} {1}".format(row[0], row[1]))
@@ -104,9 +104,9 @@ def get_active_reload():
 
 def get_by_page_type(page_type):
     """ Return all active tests by page type from the A/B active sheet """
-    merged_list = get_all_tests()
+    all_tests = get_all_tests()
     active_page = []
-    for row in merged_list:
+    for row in all_tests:
         try:
             if row[9] == "x" and row[10].lower() == page_type:
                 active_page.append("https://contegixapp1.livenation.com/jira/browse/{0} {1}".format(row[0], row[1]))
@@ -127,8 +127,8 @@ def get_by_EFEAT(efeat_num):
     efeat_string = "EFEAT-" + efeat_num
     found = False
 
-    merged_list = get_all_tests()
-    for row in merged_list:
+    all_tests = get_all_tests()
+    for row in all_tests:
         try:
             if efeat_string in row:
                 found = True
@@ -156,11 +156,11 @@ def get_by_recent(days):
     if days > 30:
         return "Max amount of days is 30.  Please try entering a number less than 30."
 
-    merged_list = get_all_tests()
+    all_tests = get_all_tests()
     days_offset = datetime.today() - timedelta(days=days)
     recent_tests = []
 
-    for row in merged_list:
+    for row in all_tests:
         try:
             launch_date = datetime.strptime(row[7], '%m/%d/%Y')
             if row[9] == "x" and launch_date > days_offset:
@@ -171,6 +171,39 @@ def get_by_recent(days):
     if not recent_tests:
         return "No active tests launched in the past {0} days".format(days)
     return "All active tests launched in the past {0} days:\n{1}".format(days, '\n'.join(recent_tests))
+
+def get_by_quarter(qtr, year):
+    """ Returns all active tests launched in a Quarter range """
+    quarters = {
+        "q1": ["1/1", "3/31"],
+        "q2": ["4/1", "6/30"],
+        "q3": ["7/1", "9/30"], 
+        "q4": ["10/1", "12/31"]
+    }
+    if qtr not in quarters:
+        return "Invalid quarter entered, try 'q1', 'q2', 'q3', or 'q4'"
+    if not year.isdigit():
+        return "Invalid year entered"
+
+    start_string = quarters[qtr][0] + "/" + year
+    end_string = quarters[qtr][1] + "/" + year
+    start_date = datetime.strptime(start_string, '%m/%d/%Y')
+    end_date = datetime.strptime(end_string, '%m/%d/%Y')
+
+    all_tests = get_all_tests()
+    quarter_tests = []
+    for row in all_tests:
+        try:
+            launch_date = datetime.strptime(row[7], '%m/%d/%Y')
+            if start_date <= launch_date <= end_date:
+                quarter_tests.append("https://contegixapp1.livenation.com/jira/browse/{1} {2}".format(row[0], row[1]))
+        except IndexError:
+            pass
+
+    if not quarter_tests:
+        return "No tests found in {0} {1}".format(qtr, year)
+    return "All tests launched in {0} {1} days:\n{2}".format(qtr, year, '\n'.join(quarter_tests))
+
 
 def get_doge():
     """ wow """

@@ -4,7 +4,7 @@ Author: Douglas Uyeda
 Date: 6/13/2018
 """
 from collections import OrderedDict
-from spreadsheet import get_active_tests, get_active_psupport, get_active_ccp, get_active_reload, get_by_page_type, get_by_EFEAT, get_by_recent, get_doge
+from spreadsheet import get_active_tests, get_active_psupport, get_active_ccp, get_active_reload, get_by_page_type, get_by_EFEAT, get_by_recent, get_by_quarter, get_doge
 
 class Slackbot(object):
     """ Slackbot main class """
@@ -20,6 +20,7 @@ class Slackbot(object):
             ("Search by page type", "Type a page type, such as 'ADP' or 'RCO', to show all active tests of that page type"),
             ("Search by EFEAT####", "Type in the EFEAT####, such as '5927', to bring up information about that test"),
             ("Search by recently launched", "Type in recent day#, such as 'recent 7', to display all active tests launched in the past 7 days"),
+            ("Search by quarter", "Type in the quarter and date, such as 'q1 2018', to pull all launched tests in that range")
         ])
         self.default_response = "Beep Boop, here are a list of commands:\n" + '\n'.join("%s = %r" % (key, val) for (key, val) in self.commands.iteritems())
 
@@ -59,6 +60,12 @@ class Slackbot(object):
         elif command.startswith("recent"):
             command = command.split()
             response = get_by_recent(command[len(command)-1])
+        elif command.startswith("q"):
+            command = command.split()
+            if len(command) != "2":
+                response = "Invalid query entered"
+            response = get_by_quarter(command[0], command[1])
+
         elif command.startswith("doge") or command.startswith("wow"):
             response = self.doge
         return response

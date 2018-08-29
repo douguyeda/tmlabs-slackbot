@@ -4,7 +4,7 @@ Author: Douglas Uyeda
 Date: 6/13/2018
 """
 from collections import OrderedDict
-from spreadsheet import get_active_tests, get_active_psupport, get_active_ccp, get_active_reload, get_by_page_type, get_by_EFEAT, get_by_recent, get_by_quarter, get_doge
+from spreadsheet import get_active_tests, get_active_psupport, get_active_ccp, get_active_reload, get_by_product, get_by_EFEAT, get_by_recent, get_by_quarter, get_doge
 
 class Slackbot(object):
     """ Slackbot main class """
@@ -13,19 +13,19 @@ class Slackbot(object):
 
         self.commands = OrderedDict([
             ("active", "Returns all active tests"),
-            ("product", "Returns all active Product Support tests"),
+            ("psupport", "Returns all active Product Support tests"),
             ("ccp", "Returns all active CCP tests"),
             ("reload", "Returns all active tests which reload the page"),
-            ("pagetypes", "Returns a list of page types you can search by"),
-            ("Search by page type", "Type a page type, such as 'ADP' or 'RCO', to show all active tests of that page type"),
+            ("products", "Returns a list of products you can search by"),
+            ("Search by product", "Type a product, such as 'RCO' or 'Discovery', to show all active tests on that product"),
             ("Search by EFEAT####", "Type in the EFEAT####, such as '5927', to bring up information about that test"),
             ("Search by recently launched", "Type in recent and day#, such as 'recent 7', to display all active tests launched in the past 7 days"),
             ("Search by quarter", "Type in the quarter and year, such as 'q1 2018', to pull all launched tests in that range")
         ])
         self.default_response = "Beep Boop, here are a list of commands:\n" + '\n'.join("%s = %r" % (key, val) for (key, val) in self.commands.iteritems())
         self.invalid_response = "Invalid query entered"
-        self.pagetypes = ["adp", "ccp edp", "confirmation", "discovery", "home", "identity", "mobile app", "rco", "srp", "survey", "tmr checkout"]
-        self.pagetypes_response = "Type any of the below page types to search by!\n" + "\n".join(self.pagetypes)
+        self.products = ["adp", "ccp edp", "confirmation", "discovery", "home", "identity", "mobile app", "order detail", "rco", "srp", "survey", "tmr checkout"]
+        self.products_response = "Type any of the below products to search by!\n" + "\n".join(self.pagetypes)
         self.doge = get_doge()
 
     def connect(self):
@@ -45,16 +45,16 @@ class Slackbot(object):
         response = None
         if command.startswith("active"):
             response = get_active_tests()
-        elif command.startswith("product"):
+        elif command.startswith("psupport"):
             response = get_active_psupport()
         elif command == "ccp":
             response = get_active_ccp()
         elif command.startswith("reload"):
             response = get_active_reload()
-        elif command.startswith("pagetypes"):
-            response = self.pagetypes_response
+        elif command.startswith("products"):
+            response = self.products_response
         elif command in self.pagetypes:
-            response = get_by_page_type(command)
+            response = get_by_product(command)
         elif command.isdigit():
             response = get_by_EFEAT(command)
         elif command.startswith("recent"):

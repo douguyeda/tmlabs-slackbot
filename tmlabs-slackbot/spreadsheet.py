@@ -102,20 +102,20 @@ def get_active_reload():
         return "No active reload tests found "
     return 'All active reload tests:\n' + '\n'.join(active_reload)
 
-def get_by_page_type(page_type):
-    """ Return all active tests by page type from the A/B active sheet """
+def get_by_product(product):
+    """ Return all active tests by product """
     all_tests = get_all_tests()
-    active_page = []
+    active_product = []
     for row in all_tests:
         try:
-            if row[9] == "x" and row[10].lower() == page_type:
-                active_page.append("https://contegixapp1.livenation.com/jira/browse/{0} {1}".format(row[0], row[1]))
+            if row[9] == "x" and row[10].lower() == product:
+                active_product.append("https://contegixapp1.livenation.com/jira/browse/{0} {1}".format(row[0], row[1]))
         except IndexError:
             pass
 
-    if not active_page:
-        return 'No active tests found with page type: ' + page_type
-    return "All active {0} tests\n{1}".format(page_type, '\n'.join(active_page))
+    if not active_product:
+        return 'No active tests found on product: ' + product
+    return "All active {0} tests\n{1}".format(product, '\n'.join(active_product))
 
 def get_by_EFEAT(efeat_num):
     """ Return the details of a ticket by EFEAT#### """

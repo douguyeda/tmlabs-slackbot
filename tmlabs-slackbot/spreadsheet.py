@@ -38,8 +38,8 @@ def build_sheet(range_name):
 
 def get_all_tests():
     """ Combine tests live and prod support sheet """
-    active = build_sheet("AB - Tests Live!A2:M")
-    product = build_sheet("AB - Prod Support!A2:M")
+    active = build_sheet("AB - Tests Live!A2:L")
+    product = build_sheet("AB - Prod Support!A2:L")
     return active + product
 
 def get_active_tests():
@@ -196,7 +196,6 @@ def get_by_quarter(qtr, year):
         try:
             launch_date = datetime.strptime(row[7], '%m/%d/%Y')
             if start_date <= launch_date <= end_date:
-                print row[0]
                 quarter_tests.append("https://contegixapp1.livenation.com/jira/browse/{0} {1}".format(row[0], row[1]))
         except IndexError:
             pass

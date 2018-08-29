@@ -53,7 +53,7 @@ class Slackbot(object):
             response = get_active_reload()
         elif command.startswith("products"):
             response = self.products_response
-        elif command in self.pagetypes:
+        elif command in self.products:
             response = get_by_product(command)
         elif command.isdigit():
             response = get_by_EFEAT(command)

@@ -196,7 +196,7 @@ def get_by_quarter(qtr, year):
         try:
             launch_date = datetime.strptime(row[7], '%m/%d/%Y')
             if start_date <= launch_date <= end_date:
-                print launch_date
+                print row[0]
                 quarter_tests.append("https://contegixapp1.livenation.com/jira/browse/{0} {1}".format(row[0], row[1]))
         except IndexError:
             pass

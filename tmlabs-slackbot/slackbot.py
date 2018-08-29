@@ -24,8 +24,12 @@ class Slackbot(object):
         ])
         self.default_response = "Beep Boop, here are a list of commands:\n" + '\n'.join("%s = %r" % (key, val) for (key, val) in self.commands.iteritems())
 
+        self.invalid_response = "Invalid query entered"
+
         self.pagetypes = ["adp", "ccp edp", "confirmation", "discovery", "home", "identity", "mobile app", "rco", "srp", "survey", "tmr checkout"]
+        
         self.pagetypes_response = "Type any of the below page types to search by!\n" + "\n".join(self.pagetypes)
+
         self.doge = get_doge()
 
     def connect(self):
@@ -59,13 +63,14 @@ class Slackbot(object):
             response = get_by_EFEAT(command)
         elif command.startswith("recent"):
             command = command.split()
+            if len(command) != 2:
+                return self.invalid_response
             response = get_by_recent(command[len(command)-1])
         elif command.startswith("q"):
             command = command.split()
-            if len(command) != "2":
-                response = "Invalid query entered"
+            if len(command) != 2:
+                return self.invalid_response
             response = get_by_quarter(command[0], command[1])
-
         elif command.startswith("doge") or command.startswith("wow"):
             response = self.doge
         return response

@@ -23,13 +23,9 @@ class Slackbot(object):
             ("Search by quarter", "Type in the quarter and date, such as 'q1 2018', to pull all launched tests in that range")
         ])
         self.default_response = "Beep Boop, here are a list of commands:\n" + '\n'.join("%s = %r" % (key, val) for (key, val) in self.commands.iteritems())
-
         self.invalid_response = "Invalid query entered"
-
-        self.pagetypes = ["adp", "ccp edp", "confirmation", "discovery", "home", "identity", "mobile app", "rco", "srp", "survey", "tmr checkout"]
-        
+        self.pagetypes = ["adp", "ccp edp", "confirmation", "discovery", "home", "identity", "mobile app", "rco", "srp", "survey", "tmr checkout"]  
         self.pagetypes_response = "Type any of the below page types to search by!\n" + "\n".join(self.pagetypes)
-
         self.doge = get_doge()
 
     def connect(self):

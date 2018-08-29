@@ -193,16 +193,17 @@ def get_by_quarter(qtr, year):
     all_tests = get_all_tests()
     quarter_tests = []
     for row in all_tests:
+        efeat = str(row[0])
         try:
             launch_date = datetime.strptime(row[7], '%m/%d/%Y')
             if start_date <= launch_date <= end_date:
-                quarter_tests.append("https://contegixapp1.livenation.com/jira/browse/{0} {1}".format(row[0], row[1]))
+                quarter_tests.append("https://contegixapp1.livenation.com/jira/browse/{0} {1}".format(efeat, row[1]))
         except IndexError:
             pass
 
     if not quarter_tests:
         return "No tests found in {0} {1}".format(qtr, year)
-    return "All tests launched in {0} {1} days:\n{2}".format(qtr, year, '\n'.join(quarter_tests))
+    return "All tests launched in {0} {1}:\n{2}".format(qtr, year, '\n'.join(quarter_tests))
 
 
 def get_doge():

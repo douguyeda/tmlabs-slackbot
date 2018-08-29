@@ -65,7 +65,7 @@ class Slackbot(object):
             command = command.split()
             if len(command) != 2:
                 return self.invalid_response
-            response = get_by_recent(command[len(command)-1])
+            response = get_by_recent(command[1])
         elif command.startswith("q"):
             command = command.split()
             if len(command) != 2:

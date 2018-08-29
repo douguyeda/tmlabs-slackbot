@@ -25,7 +25,7 @@ class Slackbot(object):
         self.default_response = "Beep Boop, here are a list of commands:\n" + '\n'.join("%s = %r" % (key, val) for (key, val) in self.commands.iteritems())
         self.invalid_response = "Invalid query entered"
         self.products = ["adp", "ccp edp", "confirmation", "discovery", "home", "identity", "mobile app", "order detail", "rco", "srp", "survey", "tmr checkout"]
-        self.products_response = "Type any of the below products to search by!\n" + "\n".join(self.pagetypes)
+        self.products_response = "Type any of the below products to search by!\n" + "\n".join(self.products)
         self.doge = get_doge()
 
     def connect(self):

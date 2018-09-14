@@ -153,8 +153,8 @@ def get_by_recent(days):
         return "Invalid day passed.  Make sure you entered an integer"
 
     days = int(days)
-    if days > 30:
-        return "Max amount of days is 30.  Please try entering a number less than 30."
+    if days > 120:
+        return "Max amount of days is 120.  Please try entering a number less than 120."
 
     all_tests = get_all_tests()
     days_offset = datetime.today() - timedelta(days=days)

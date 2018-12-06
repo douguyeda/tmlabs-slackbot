@@ -162,6 +162,8 @@ def get_by_recent(days):
 
     for row in all_tests:
         try:
+            if row[7] == '':
+                break
             launch_date = datetime.strptime(row[7], '%m/%d/%Y')
             if row[9] == "x" and launch_date > days_offset:
                 recent_tests.append("{0} https://contegixapp1.livenation.com/jira/browse/{1} {2}".format(row[7], row[0], row[1]))
@@ -194,6 +196,8 @@ def get_by_quarter(qtr, year):
     quarter_tests = []
     for row in all_tests:
         try:
+            if row[7] == '':
+                break
             launch_date = datetime.strptime(row[7], '%m/%d/%Y')
             if start_date <= launch_date <= end_date:
                 quarter_tests.append("https://contegixapp1.livenation.com/jira/browse/{0} {1}".format(row[0], row[1]))

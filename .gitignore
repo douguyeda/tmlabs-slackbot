@@ -3,5 +3,5 @@
 .vscode
 .DS_Store
 test.py
-client_secret.json
+credentials.json
 venv

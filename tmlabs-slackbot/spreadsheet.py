@@ -137,7 +137,6 @@ def get_by_EFEAT(efeat_num):
                 efeat["Link"] = "https://contegixapp1.livenation.com/jira/browse/" + row[0]
                 if row[9] == "x":
                     efeat["Active"] = "yes"
-                efeat["Product Leads"] = row[11].replace("\n", ", ")
                 break
         except IndexError:
             efeat["Active"] = "no"

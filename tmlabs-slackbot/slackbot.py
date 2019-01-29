@@ -4,13 +4,12 @@ Author: Douglas Uyeda
 Date: 10/14/2018
 """
 from collections import OrderedDict
-from spreadsheet import get_active_tests, get_active_psupport, get_active_ccp, get_active_ife, get_active_reload, get_by_product, get_by_EFEAT, get_by_recent, get_by_quarter, get_doge
+from spreadsheet import get_active_ab_tests, get_active_psupport, get_active_by_index, get_by_product, get_by_EFEAT, get_by_recent, get_by_quarter, get_doge
 
 class Slackbot(object):
     """ Slackbot main class """
     def __init__(self, slack_client=None):
         self.slack_client = slack_client
-
         self.commands = OrderedDict([
             ("active", "Returns all active tests"),
             ("psupport", "Returns all active Product Support tests"),
@@ -45,15 +44,15 @@ class Slackbot(object):
         command = command.lower()
         response = None
         if command.startswith("active"):
-            response = get_active_tests()
+            response = get_active_ab_tests()
         elif command.startswith("psupport"):
             response = get_active_psupport()
         elif command == "ccp":
-            response = get_active_ccp()
+            response = get_active_by_index(5)
         elif command == "ife":
-            response = get_active_ife()
+            response = get_active_by_index(4)
         elif command.startswith("reload"):
-            response = get_active_reload()
+            response = get_active_by_index(6)
         elif command.startswith("products"):
             response = self.products_response
         elif command in self.products:

@@ -44,84 +44,55 @@ def build_sheet(range_name):
 
 def get_all_tests():
     """ Combine tests live and prod support sheet """
-    active = build_sheet("AB - Tests Live!A2:L")
-    product = build_sheet("AB - Prod Support!A2:L")
+    active = build_sheet("AB - Tests Live!A2:J")
+    product = build_sheet("AB - Prod Support!A2:J")
     return active + product
 
-def get_active_tests():
-    """ Return all active tests """
+def get_active_ab_tests():
+    """ Return all active AB tests """
     values = build_sheet("AB - Tests Live!A2:J")
-    active_tests = []
+    results = []
     for row in values:
         try:
             if row[9] == "x":
-                active_tests.append("https://contegixapp1.livenation.com/jira/browse/{0} {1}".format(row[0], row[1]))
+                results.append("https://contegixapp1.livenation.com/jira/browse/{0} {1}".format(row[0], row[1]))
         except IndexError:
             pass
 
-    if not active_tests:
-        return "No active tests found"
-    return 'All active tests:\n' + '\n'.join(active_tests)
+    if not results:
+        return "No active AB tests found"
+    return 'All active AB tests:\n' + '\n'.join(results)
 
 def get_active_psupport():
     """ Return all active product support tests """
     values = build_sheet("AB - Prod Support!A2:J")
-    active_psupport = []
+    results = []
     for row in values:
         try:
             if row[9] == "x":
-                active_psupport.append("https://contegixapp1.livenation.com/jira/browse/{0} {1}".format(row[0], row[1]))
+                results.append("https://contegixapp1.livenation.com/jira/browse/{0} {1}".format(row[0], row[1]))
         except IndexError:
             pass
 
-    if not active_psupport:
+    if not results:
         return "No active product support tests found"
-    return 'All active product support tests:\n' + '\n'.join(active_psupport)
+    return 'All active product support tests:\n' + '\n'.join(results)
 
-def get_active_ife():
-    """ Returns all active IFE tests """
-    active_tests = build_sheet("AB - Tests Live!A2:J")
+def get_active_by_index(row_num):
+    """ Grab all active tests by row number """
+    tests = build_sheet("AB - Tests Live!A2:J") if row_num == 4 else get_all_tests()
     results = []
-    for row in active_tests:
+    for row in tests:
         try:
-            if row[4] == "x" and row[9] == "x":
+            if row[row_num] == "x" and row[9] == "x":
                 results.append("https://contegixapp1.livenation.com/jira/browse/{0} {1}".format(row[0], row[1]))
         except IndexError:
             pass
 
+    row_name = ROW_MAP[row_num]
     if not results:
-        return "No active IFE tests found"
-    return 'All active IFE tests:\n' + '\n'.join(results)
-
-def get_active_ccp():
-    """ Return all active ccp tests """
-    all_tests = get_all_tests()
-    results = []
-    for row in all_tests:
-        try:
-            if row[5] == "x" and row[9] == "x":
-                results.append("https://contegixapp1.livenation.com/jira/browse/{0} {1}".format(row[0], row[1]))
-        except IndexError:
-            pass
-
-    if not results:
-        return "No active ccp tests found"
-    return 'All active CCP tests:\n' + '\n'.join(results)
-
-def get_active_reload():
-    """ Return all active tests that force a reload """
-    all_tests = get_all_tests()
-    active_reload = []
-    for row in all_tests:
-        try:
-            if row[6] == "x" and row[9] == "x":
-                active_reload.append("https://contegixapp1.livenation.com/jira/browse/{0} {1}".format(row[0], row[1]))
-        except IndexError:
-            pass
-
-    if not active_reload:
-        return "No active reload tests found "
-    return 'All active reload tests:\n' + '\n'.join(active_reload)
+        return "No active " + row_name + "tests found"
+    return "All active " + row_name + " tests" + ":\n" + "\n".join(results)
 
 def get_by_product(product):
     """ Return all active tests by product """

@@ -12,6 +12,12 @@ import httplib2
 from oauth2client.service_account import ServiceAccountCredentials
 from apiclient import discovery
 
+ROW_MAP = {
+    4: 'IFE',
+    5: 'CCP',
+    6: 'Reload'
+}
+
 def get_credentials():
     """ Get valid credentials to use """
     scope = ['https://www.googleapis.com/auth/spreadsheets.readonly']
@@ -72,20 +78,35 @@ def get_active_psupport():
         return "No active product support tests found"
     return 'All active product support tests:\n' + '\n'.join(active_psupport)
 
-def get_active_ccp():
-    """ Return all active ccp tests """
-    all_tests = get_all_tests()
-    active_ccp = []
-    for row in all_tests:
+def get_active_ife():
+    """ Returns all active IFE tests """
+    active_tests = build_sheet("AB - Tests Live!A2:J")
+    results = []
+    for row in active_tests:
         try:
-            if row[5] == "x" and row[9] == "x":
-                active_ccp.append("https://contegixapp1.livenation.com/jira/browse/{0} {1}".format(row[0], row[1]))
+            if row[4] == "x" and row[9] == "x":
+                results.append("https://contegixapp1.livenation.com/jira/browse/{0} {1}".format(row[0], row[1]))
         except IndexError:
             pass
 
-    if not active_ccp:
+    if not results:
+        return "No active IFE tests found"
+    return 'All active IFE tests:\n' + '\n'.join(results)
+
+def get_active_ccp():
+    """ Return all active ccp tests """
+    all_tests = get_all_tests()
+    results = []
+    for row in all_tests:
+        try:
+            if row[5] == "x" and row[9] == "x":
+                results.append("https://contegixapp1.livenation.com/jira/browse/{0} {1}".format(row[0], row[1]))
+        except IndexError:
+            pass
+
+    if not results:
         return "No active ccp tests found"
-    return 'All active CCP tests:\n' + '\n'.join(active_ccp)
+    return 'All active CCP tests:\n' + '\n'.join(results)
 
 def get_active_reload():
     """ Return all active tests that force a reload """

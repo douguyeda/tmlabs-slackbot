@@ -4,7 +4,7 @@ Author: Douglas Uyeda
 Date: 10/14/2018
 """
 from collections import OrderedDict
-from spreadsheet import get_active_tests, get_active_psupport, get_active_ccp, get_active_reload, get_by_product, get_by_EFEAT, get_by_recent, get_by_quarter, get_doge
+from spreadsheet import get_active_tests, get_active_psupport, get_active_ccp, get_active_ife, get_active_reload, get_by_product, get_by_EFEAT, get_by_recent, get_by_quarter, get_doge
 
 class Slackbot(object):
     """ Slackbot main class """
@@ -15,6 +15,7 @@ class Slackbot(object):
             ("active", "Returns all active tests"),
             ("psupport", "Returns all active Product Support tests"),
             ("ccp", "Returns all active CCP tests"),
+            ("ife", "Returns all active IFE tests"),
             ("reload", "Returns all active tests which reload the page"),
             ("products", "Returns a list of products you can search by"),
             ("Search by product", "Type a product, such as 'RCO' or 'Discovery', to show all active tests on that product"),
@@ -49,6 +50,8 @@ class Slackbot(object):
             response = get_active_psupport()
         elif command == "ccp":
             response = get_active_ccp()
+        elif command == "ife":
+            response = get_active_ife()
         elif command.startswith("reload"):
             response = get_active_reload()
         elif command.startswith("products"):

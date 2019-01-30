@@ -97,17 +97,17 @@ def get_active_by_index(row_num):
 def get_by_product(product):
     """ Return all active tests by product """
     all_tests = get_all_tests()
-    active_product = []
+    results = []
     for row in all_tests:
         try:
             if row[9] == "x" and row[10].lower() == product:
-                active_product.append("https://contegixapp1.livenation.com/jira/browse/{0} {1}".format(row[0], row[1]))
+                results.append("https://contegixapp1.livenation.com/jira/browse/{0} {1}".format(row[0], row[1]))
         except IndexError:
             pass
 
-    if not active_product:
+    if not results:
         return 'No active tests found on product: ' + product
-    return "All active {0} tests\n{1}".format(product, '\n'.join(active_product))
+    return "All active {0} tests\n{1}".format(product, '\n'.join(results))
 
 def get_by_EFEAT(efeat_num):
     """ Return the details of a ticket by EFEAT#### """
@@ -148,7 +148,7 @@ def get_by_recent(days):
 
     all_tests = get_all_tests()
     days_offset = datetime.today() - timedelta(days=days)
-    recent_tests = []
+    results = []
 
     for row in all_tests:
         try:
@@ -156,13 +156,13 @@ def get_by_recent(days):
                 pass
             launch_date = datetime.strptime(row[7], '%m/%d/%Y')
             if row[9] == "x" and launch_date > days_offset:
-                recent_tests.append("{0} https://contegixapp1.livenation.com/jira/browse/{1} {2}".format(row[7], row[0], row[1]))
+                results.append("{0} https://contegixapp1.livenation.com/jira/browse/{1} {2}".format(row[7], row[0], row[1]))
         except IndexError:
             pass
 
-    if not recent_tests:
+    if not results:
         return "No active tests launched in the past {0} days".format(days)
-    return "All active tests launched in the past {0} days:\n{1}".format(days, '\n'.join(recent_tests))
+    return "All active tests launched in the past {0} days:\n{1}".format(days, '\n'.join(results))
 
 def get_by_quarter(qtr, year):
     """ Returns all active tests launched in a Quarter range """

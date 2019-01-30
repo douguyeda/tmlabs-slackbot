@@ -44,8 +44,8 @@ def build_sheet(range_name):
 
 def get_all_tests():
     """ Combine tests live and prod support sheet """
-    active = build_sheet("AB - Tests Live!A2:J")
-    product = build_sheet("AB - Prod Support!A2:J")
+    active = build_sheet("AB - Tests Live!A2:K")
+    product = build_sheet("AB - Prod Support!A2:K")
     return active + product
 
 def get_active_ab_tests():

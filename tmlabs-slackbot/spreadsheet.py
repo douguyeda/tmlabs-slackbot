@@ -13,9 +13,9 @@ from oauth2client.service_account import ServiceAccountCredentials
 from apiclient import discovery
 
 ROW_MAP = {
-    4: 'IFE',
-    5: 'CCP',
-    6: 'Reload'
+    4: "IFE",
+    5: "CCP",
+    6: "Reload"
 }
 
 def get_credentials():
@@ -61,7 +61,7 @@ def get_active_ab_tests():
 
     if not results:
         return "No active AB tests found"
-    return 'All active AB tests:\n' + '\n'.join(results)
+    return "All active AB tests:\n" + "\n".join(results)
 
 def get_active_psupport():
     """ Return all active product support tests """
@@ -76,7 +76,7 @@ def get_active_psupport():
 
     if not results:
         return "No active product support tests found"
-    return 'All active product support tests:\n' + '\n'.join(results)
+    return "All active product support tests:\n" + "\n".join(results)
 
 def get_active_by_index(row_num):
     """ Grab all active tests by row number """
@@ -91,8 +91,8 @@ def get_active_by_index(row_num):
 
     row_name = ROW_MAP[row_num]
     if not results:
-        return "No active " + row_name + "tests found"
-    return "All active " + row_name + " tests" + ":\n" + "\n".join(results)
+        return "No active {} tests found".format(row_name)
+    return "All active {0} tests:\n{1}".format(row_name, "\n".join(results))
 
 def get_by_product(product):
     """ Return all active tests by product """
@@ -106,8 +106,8 @@ def get_by_product(product):
             pass
 
     if not results:
-        return 'No active tests found on product: ' + product
-    return "All active {0} tests\n{1}".format(product, '\n'.join(results))
+        return "No active {} tests found".format(product)
+    return "All active {0} tests:\n{1}".format(product, '\n'.join(results))
 
 def get_by_EFEAT(efeat_num):
     """ Return the details of a ticket by EFEAT#### """
@@ -134,7 +134,7 @@ def get_by_EFEAT(efeat_num):
             efeat["Active"] = "no"
 
     if found is False:
-        return efeat_string + " not found"
+        return "{} not found".format(efeat_string)
     return json.dumps(efeat, indent=0)[2:-2]
 
 def get_by_recent(days):

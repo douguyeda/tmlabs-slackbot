@@ -20,7 +20,6 @@ if __name__ == "__main__":
     while True:
         rtm_command, rtm_channel = slackbot.parse_commands()
         if rtm_command:
-            print rtm_command
             response = slackbot.handle_command(rtm_command)
             slackbot.send_message(response, rtm_channel)
         time.sleep(RTM_READ_DELAY)

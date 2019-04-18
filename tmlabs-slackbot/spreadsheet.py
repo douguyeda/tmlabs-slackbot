@@ -14,7 +14,7 @@ from apiclient import discovery
 
 ROW_MAP = {
     4: "IFE",
-    5: "CCP",
+    5: "Survey",
     6: "Reload"
 }
 
@@ -80,7 +80,7 @@ def get_active_psupport():
 
 def get_active_by_index(row_num):
     """ Grab all active tests by row number """
-    tests = build_sheet("AB - Tests Live!A2:J") if row_num == 4 else get_all_tests()
+    tests = get_all_tests() if row_num == 6 else build_sheet("AB - Tests Live!A2:J")
     results = []
     for row in tests:
         try:

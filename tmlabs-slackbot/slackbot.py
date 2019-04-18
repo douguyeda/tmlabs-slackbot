@@ -13,8 +13,8 @@ class Slackbot(object):
         self.commands = OrderedDict([
             ("active", "Returns all active tests"),
             ("psupport", "Returns all active Product Support tests"),
-            ("ccp", "Returns all active CCP tests"),
             ("ife", "Returns all active IFE tests"),
+            ("survey", "Returns all active Usabilla Surveys"),
             ("reload", "Returns all active tests which reload the page"),
             ("products", "Returns a list of products you can search by"),
             ("Search by product", "Type a product, such as 'RCO' or 'Discovery', to show all active tests on that product"),
@@ -24,7 +24,7 @@ class Slackbot(object):
         ])
         self.default_response = "Beep Boop, here are a list of commands:\n" + '\n'.join("%s = %r" % (key, val) for (key, val) in self.commands.iteritems())
         self.invalid_response = "Invalid query entered"
-        self.products = ["edp", "confirmation", "discovery", "identity", "mobile app", "order detail", "rco", "survey", "tmr checkout"]
+        self.products = ["edp", "confirmation", "discovery", "identity", "mobile app", "order detail", "rco", "tmr checkout"]
         self.products_response = "Type any of the below products to search by!\n" + "\n".join(self.products)
         self.doge = get_doge()
 
@@ -48,10 +48,10 @@ class Slackbot(object):
             response = get_active_ab_tests()
         elif command.startswith("psupport"):
             response = get_active_psupport()
-        elif command == "ccp":
-            response = get_active_by_index(5)
         elif command == "ife":
             response = get_active_by_index(4)
+        elif command == "survey":
+            response = get_active_by_index(5)
         elif command.startswith("reload"):
             response = get_active_by_index(6)
         elif command.startswith("products"):

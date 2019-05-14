@@ -36,7 +36,6 @@ class Slackbot(object):
         """ Listen for messages and return the message and channel """
         for event in self.slack_client.rtm_read():
             if event["type"] == "message" and not "subtype" in event:
-                print event
                 return event["text"], event["channel"]
         return None, None
 

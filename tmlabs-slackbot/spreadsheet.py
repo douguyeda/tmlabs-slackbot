@@ -100,9 +100,7 @@ def get_by_product(product):
     results = []
     for row in all_tests:
         try:
-            prd = row[10]
-            prd = prd.replace('.', '')
-            if row[9] == "x" and prd.lower() == product:
+            if row[9] == "x" and row[10].lower() == product:
                 results.append("https://contegixapp1.livenation.com/jira/browse/{0} {1}".format(row[0], row[1]))
         except IndexError:
             pass

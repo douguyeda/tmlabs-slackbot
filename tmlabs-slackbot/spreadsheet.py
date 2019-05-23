@@ -62,7 +62,6 @@ def get_active_ab_tests():
                     results.append("{0}{1} {2}".format(JIRA_LINK, row[0].encode('ascii', 'ignore'), row[1].encode('ascii', 'ignore')))
         except IndexError:
             pass
-
     if not results:
         return "No active AB tests found"
     return "All active AB tests:\n" + "\n".join(results)
@@ -74,7 +73,10 @@ def get_active_psupport():
     for row in values:
         try:
             if row[9] == "x":
-                results.append(u"https://contegixapp1.livenation.com/jira/browse/{0} {1}".format(row[0], row[1]))
+                try:
+                    results.append("{0}{1} {2}".format(JIRA_LINK, row[0], row[1]))
+                except UnicodeEncodeError:
+                    results.append("{0}{1} {2}".format(JIRA_LINK, row[0].encode('ascii', 'ignore'), row[1].encode('ascii', 'ignore')))
         except IndexError:
             pass
 
@@ -89,7 +91,10 @@ def get_active_by_index(row_num):
     for row in tests:
         try:
             if row[row_num] == "x" and row[9] == "x":
-                results.append(u"https://contegixapp1.livenation.com/jira/browse/{0} {1}".format(row[0], row[1]))
+                try:
+                    results.append("{0}{1} {2}".format(JIRA_LINK, row[0], row[1]))
+                except UnicodeEncodeError:
+                    results.append("{0}{1} {2}".format(JIRA_LINK, row[0].encode('ascii', 'ignore'), row[1].encode('ascii', 'ignore')))
         except IndexError:
             pass
 
@@ -105,7 +110,10 @@ def get_by_product(product):
     for row in all_tests:
         try:
             if row[9] == "x" and row[10].lower() == product:
-                results.append(u"https://contegixapp1.livenation.com/jira/browse/{0} {1}".format(row[0], row[1]))
+                try:
+                    results.append("{0}{1} {2}".format(JIRA_LINK, row[0], row[1]))
+                except UnicodeEncodeError:
+                    results.append("{0}{1} {2}".format(JIRA_LINK, row[0].encode('ascii', 'ignore'), row[1].encode('ascii', 'ignore')))
         except IndexError:
             pass
 
@@ -127,7 +135,7 @@ def get_by_EFEAT(efeat_num):
         try:
             if efeat_string in row:
                 found = True
-                efeat["Test Name"] = efeat_string + " " + row[1]
+                efeat["Test Name"] = efeat_string + " " + row[1].encode('ascii', 'ignore')
                 efeat["Hypothesis"] = row[3].replace("\n", ", ")
                 efeat["Launch Date"] = row[7]
                 efeat["Link"] = "https://contegixapp1.livenation.com/jira/browse/" + row[0]
@@ -160,7 +168,10 @@ def get_by_recent(days):
                 pass
             launch_date = datetime.strptime(row[7], '%m/%d/%Y')
             if row[9] == "x" and launch_date > days_offset:
-                results.append(u"{0} https://contegixapp1.livenation.com/jira/browse/{1} {2}".format(row[7], row[0], row[1]))
+                try:
+                    results.append("{0} {1}{2} {3}".format(row[7], JIRA_LINK, row[0], row[1]))
+                except UnicodeEncodeError:
+                    results.append("{0} {1}{2} {3}".format(row[7], JIRA_LINK, row[0].encode('ascii', 'ignore'), row[1].encode('ascii', 'ignore')))
         except IndexError:
             pass
 
@@ -187,21 +198,23 @@ def get_by_quarter(qtr, year):
     end_date = datetime.strptime(end_string, '%m/%d/%Y')
 
     all_tests = get_all_tests()
-    quarter_tests = []
+    results = []
     for row in all_tests:
         try:
             if row[7] == '':
                 pass
             launch_date = datetime.strptime(row[7], '%m/%d/%Y')
             if start_date <= launch_date <= end_date:
-                quarter_tests.append(u"https://contegixapp1.livenation.com/jira/browse/{0} {1}".format(row[0], row[1]))
+                try:
+                    results.append("{0}{1} {2}".format(JIRA_LINK, row[0], row[1]))
+                except UnicodeEncodeError:
+                    results.append("{0}{1} {2}".format(JIRA_LINK, row[0].encode('ascii', 'ignore'), row[1].encode('ascii', 'ignore')))
         except IndexError:
             pass
 
-    if not quarter_tests:
+    if not results:
         return "No tests found in {0} {1}".format(qtr, year)
-    return "All tests launched in {0} {1}:\n{2}".format(qtr, year, '\n'.join(quarter_tests))
-
+    return "All tests launched in {0} {1}:\n{2}".format(qtr, year, '\n'.join(results))
 
 def get_doge():
     """ wow """

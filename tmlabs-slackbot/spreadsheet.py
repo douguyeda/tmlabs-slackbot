@@ -17,6 +17,7 @@ ROW_MAP = {
     5: "Survey",
     6: "Reload"
 }
+JIRA_LINK = "https://contegixapp1.livenation.com/jira/browse/"
 
 def get_credentials():
     """ Get valid credentials to use """
@@ -55,7 +56,10 @@ def get_active_ab_tests():
     for row in values:
         try:
             if row[9] == "x":
-                results.append("https://contegixapp1.livenation.com/jira/browse/{0} {1}".format(row[0], row[1]))
+                try:
+                    results.append("{0}{1} {2}".format(JIRA_LINK, row[0], row[1]))
+                except UnicodeEncodeError:
+                    results.append("{0}{1} {2}".format(JIRA_LINK, row[0].encode('ascii', 'ignore'), row[1].encode('ascii', 'ignore')))
         except IndexError:
             pass
 
@@ -70,7 +74,7 @@ def get_active_psupport():
     for row in values:
         try:
             if row[9] == "x":
-                results.append("https://contegixapp1.livenation.com/jira/browse/{0} {1}".format(row[0], row[1]))
+                results.append(u"https://contegixapp1.livenation.com/jira/browse/{0} {1}".format(row[0], row[1]))
         except IndexError:
             pass
 
@@ -85,7 +89,7 @@ def get_active_by_index(row_num):
     for row in tests:
         try:
             if row[row_num] == "x" and row[9] == "x":
-                results.append("https://contegixapp1.livenation.com/jira/browse/{0} {1}".format(row[0], row[1]))
+                results.append(u"https://contegixapp1.livenation.com/jira/browse/{0} {1}".format(row[0], row[1]))
         except IndexError:
             pass
 
@@ -101,7 +105,7 @@ def get_by_product(product):
     for row in all_tests:
         try:
             if row[9] == "x" and row[10].lower() == product:
-                results.append("https://contegixapp1.livenation.com/jira/browse/{0} {1}".format(row[0], row[1]))
+                results.append(u"https://contegixapp1.livenation.com/jira/browse/{0} {1}".format(row[0], row[1]))
         except IndexError:
             pass
 
@@ -156,7 +160,7 @@ def get_by_recent(days):
                 pass
             launch_date = datetime.strptime(row[7], '%m/%d/%Y')
             if row[9] == "x" and launch_date > days_offset:
-                results.append("{0} https://contegixapp1.livenation.com/jira/browse/{1} {2}".format(row[7], row[0], row[1]))
+                results.append(u"{0} https://contegixapp1.livenation.com/jira/browse/{1} {2}".format(row[7], row[0], row[1]))
         except IndexError:
             pass
 
@@ -190,7 +194,7 @@ def get_by_quarter(qtr, year):
                 pass
             launch_date = datetime.strptime(row[7], '%m/%d/%Y')
             if start_date <= launch_date <= end_date:
-                quarter_tests.append("https://contegixapp1.livenation.com/jira/browse/{0} {1}".format(row[0], row[1]))
+                quarter_tests.append(u"https://contegixapp1.livenation.com/jira/browse/{0} {1}".format(row[0], row[1]))
         except IndexError:
             pass
 

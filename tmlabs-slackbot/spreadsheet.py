@@ -138,7 +138,7 @@ def get_by_EFEAT(efeat_num):
                 efeat["Test Name"] = efeat_string + " " + row[1].encode('ascii', 'ignore')
                 efeat["Hypothesis"] = row[3].replace("\n", ", ")
                 efeat["Launch Date"] = row[7]
-                efeat["Link"] = "https://contegixapp1.livenation.com/jira/browse/" + row[0]
+                efeat["Link"] = "{}{}".format(JIRA_LINK, row[0])
                 if row[9] == "x":
                     efeat["Active"] = "yes"
                 break

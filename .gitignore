@@ -4,5 +4,4 @@
 .DS_Store
 test.py
 credentials.json
-token.pickle
 venv

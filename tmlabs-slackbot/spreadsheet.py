@@ -24,7 +24,7 @@ def get_credentials():
     scope = ['https://www.googleapis.com/auth/spreadsheets.readonly']
     credentials_raw = os.environ.get('GOOGLE_APPLICATION_CREDENTIALS')
     service_account_info = json.loads(credentials_raw)
-    creds = Credentials.from_service_account_file(service_account_info, scope)
+    creds = Credentials.from_service_account_file(service_account_info, scopes=scope)
     return creds
 
 def build_sheet(range_name):

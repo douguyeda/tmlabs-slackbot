@@ -25,7 +25,6 @@ def get_credentials():
     SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
 
     creds = None
-    print os.path.exists('token.pickle')
     if os.path.exists('token.pickle'):
         with open('token.pickle', 'rb') as token:
             creds = pickle.load(token)

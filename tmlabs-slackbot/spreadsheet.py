@@ -9,8 +9,8 @@ import json
 from collections import OrderedDict
 from datetime import datetime, timedelta
 import httplib2
-from oauth2client.service_account import ServiceAccountCredentials
-from apiclient import discovery
+from google.oauth2.service_account import Credentials
+from googleapiclient.discovery import build
 
 ROW_MAP = {
     4: "IFE",
@@ -24,7 +24,7 @@ def get_credentials():
     scope = ['https://www.googleapis.com/auth/spreadsheets.readonly']
     credentials_raw = os.environ.get('GOOGLE_APPLICATION_CREDENTIALS')
     service_account_info = json.loads(credentials_raw)
-    creds = ServiceAccountCredentials.from_json_keyfile_dict(service_account_info, scope)
+    creds = Credentials.from_service_account_file(service_account_info, scope)
     return creds
 
 def build_sheet(range_name):
@@ -32,7 +32,7 @@ def build_sheet(range_name):
     credentials = get_credentials()
     http = credentials.authorize(httplib2.Http())
     discoveryUrl = ('https://sheets.googleapis.com/$discovery/rest?version=v4')
-    service = discovery.build('sheets', 'v4', http=http, cache_discovery=False,
+    service = build('sheets', 'v4', http=http, cache_discovery=False,
                               discoveryServiceUrl=discoveryUrl)
     spreadsheetId = "1yhqjAVuo_nlByP4G6zGfQ3gF3fz3IR4FXnqaN93OVUo"
     result = service.spreadsheets().values().get(

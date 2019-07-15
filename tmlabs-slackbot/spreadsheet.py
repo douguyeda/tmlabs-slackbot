@@ -6,12 +6,11 @@ https://stackoverflow.com/questions/40154672/importerror-file-cache-is-unavailab
 """
 import os
 import json
-import pickle
 from collections import OrderedDict
 from datetime import datetime, timedelta
-from google.auth.transport.requests import Request
-from googleapiclient.discovery import build
-from google_auth_oauthlib.flow import InstalledAppFlow
+import httplib2
+from oauth2client.service_account import ServiceAccountCredentials
+from apiclient import discovery
 
 ROW_MAP = {
     4: "IFE",
@@ -21,39 +20,27 @@ ROW_MAP = {
 JIRA_LINK = "https://contegixapp1.livenation.com/jira/browse/"
 
 def get_credentials():
-    """ Get valid credentials """
-    SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
-
-    creds = None
-    if os.path.exists('token.pickle'):
-        with open('token.pickle', 'rb') as token:
-            creds = pickle.load(token)
-    
-    # If there are no (valid) credentials available, let the user log in.
-    if not creds or not creds.valid:
-        if creds and creds.expired and creds.refresh_token:
-            creds.refresh(Request())
-        else:
-            flow = InstalledAppFlow.from_client_secrets_file(
-                'credentials.json', SCOPES)
-            creds = flow.run_local_server()
-        # Save the credentials for the next run
-        with open('token.pickle', 'wb') as token:
-            pickle.dump(creds, token)
-
+    """ Get valid credentials to use """
+    scope = ['https://www.googleapis.com/auth/spreadsheets.readonly']
+    credentials_raw = os.environ.get('GOOGLE_APPLICATION_CREDENTIALS')
+    service_account_info = json.loads(credentials_raw)
+    creds = ServiceAccountCredentials.from_json_keyfile_dict(service_account_info, scope)
     return creds
 
 def build_sheet(range_name):
     """ Build a google sheet by choosing a sheet and the range """
-    creds = get_credentials()
-    service = build('sheets', 'v4', credentials=creds)
-    SPREADSHEETID = '1yhqjAVuo_nlByP4G6zGfQ3gF3fz3IR4FXnqaN93OVUo'
-    sheet = service.spreadsheets()
-    result = sheet.values().get(spreadsheetId=SPREADSHEETID,
-                                range=range_name).execute()
+    credentials = get_credentials()
+    http = credentials.authorize(httplib2.Http())
+    discoveryUrl = ('https://sheets.googleapis.com/$discovery/rest?version=v4')
+    service = discovery.build('sheets', 'v4', http=http, cache_discovery=False,
+                              discoveryServiceUrl=discoveryUrl)
+    spreadsheetId = "1yhqjAVuo_nlByP4G6zGfQ3gF3fz3IR4FXnqaN93OVUo"
+    result = service.spreadsheets().values().get(
+        spreadsheetId=spreadsheetId, range=range_name).execute()
     values = result.get('values', [])
+
     if not values:
-        return 'No values found in spreadsheet'
+        return "No values found in spreadsheet"
     return values
 
 def get_all_tests():
@@ -75,7 +62,6 @@ def get_active_ab_tests():
                     results.append("{0}{1} {2}".format(JIRA_LINK, row[0].encode('ascii', 'ignore'), row[1].encode('ascii', 'ignore')))
         except IndexError:
             pass
-
     if not results:
         return "No active AB tests found"
     return "All active AB tests:\n" + "\n".join(results)
@@ -87,7 +73,10 @@ def get_active_psupport():
     for row in values:
         try:
             if row[9] == "x":
-                results.append(u"https://contegixapp1.livenation.com/jira/browse/{0} {1}".format(row[0], row[1]))
+                try:
+                    results.append("{0}{1} {2}".format(JIRA_LINK, row[0], row[1]))
+                except UnicodeEncodeError:
+                    results.append("{0}{1} {2}".format(JIRA_LINK, row[0].encode('ascii', 'ignore'), row[1].encode('ascii', 'ignore')))
         except IndexError:
             pass
 
@@ -102,7 +91,10 @@ def get_active_by_index(row_num):
     for row in tests:
         try:
             if row[row_num] == "x" and row[9] == "x":
-                results.append(u"https://contegixapp1.livenation.com/jira/browse/{0} {1}".format(row[0], row[1]))
+                try:
+                    results.append("{0}{1} {2}".format(JIRA_LINK, row[0], row[1]))
+                except UnicodeEncodeError:
+                    results.append("{0}{1} {2}".format(JIRA_LINK, row[0].encode('ascii', 'ignore'), row[1].encode('ascii', 'ignore')))
         except IndexError:
             pass
 
@@ -118,7 +110,10 @@ def get_by_product(product):
     for row in all_tests:
         try:
             if row[9] == "x" and row[10].lower() == product:
-                results.append(u"https://contegixapp1.livenation.com/jira/browse/{0} {1}".format(row[0], row[1]))
+                try:
+                    results.append("{0}{1} {2}".format(JIRA_LINK, row[0], row[1]))
+                except UnicodeEncodeError:
+                    results.append("{0}{1} {2}".format(JIRA_LINK, row[0].encode('ascii', 'ignore'), row[1].encode('ascii', 'ignore')))
         except IndexError:
             pass
 
@@ -140,7 +135,7 @@ def get_by_EFEAT(efeat_num):
         try:
             if efeat_string in row:
                 found = True
-                efeat["Test Name"] = efeat_string + " " + row[1]
+                efeat["Test Name"] = efeat_string + " " + row[1].encode('ascii', 'ignore')
                 efeat["Hypothesis"] = row[3].replace("\n", ", ")
                 efeat["Launch Date"] = row[7]
                 efeat["Link"] = "{}{}".format(JIRA_LINK, row[0])
@@ -173,7 +168,10 @@ def get_by_recent(days):
                 pass
             launch_date = datetime.strptime(row[7], '%m/%d/%Y')
             if row[9] == "x" and launch_date > days_offset:
-                results.append(u"{0} https://contegixapp1.livenation.com/jira/browse/{1} {2}".format(row[7], row[0], row[1]))
+                try:
+                    results.append("{0} {1}{2} {3}".format(row[7], JIRA_LINK, row[0], row[1]))
+                except UnicodeEncodeError:
+                    results.append("{0} {1}{2} {3}".format(row[7], JIRA_LINK, row[0].encode('ascii', 'ignore'), row[1].encode('ascii', 'ignore')))
         except IndexError:
             pass
 
@@ -200,21 +198,23 @@ def get_by_quarter(qtr, year):
     end_date = datetime.strptime(end_string, '%m/%d/%Y')
 
     all_tests = get_all_tests()
-    quarter_tests = []
+    results = []
     for row in all_tests:
         try:
             if row[7] == '':
                 pass
             launch_date = datetime.strptime(row[7], '%m/%d/%Y')
             if start_date <= launch_date <= end_date:
-                quarter_tests.append(u"https://contegixapp1.livenation.com/jira/browse/{0} {1}".format(row[0], row[1]))
+                try:
+                    results.append("{0}{1} {2}".format(JIRA_LINK, row[0], row[1]))
+                except UnicodeEncodeError:
+                    results.append("{0}{1} {2}".format(JIRA_LINK, row[0].encode('ascii', 'ignore'), row[1].encode('ascii', 'ignore')))
         except IndexError:
             pass
 
-    if not quarter_tests:
+    if not results:
         return "No tests found in {0} {1}".format(qtr, year)
-    return "All tests launched in {0} {1}:\n{2}".format(qtr, year, '\n'.join(quarter_tests))
-
+    return "All tests launched in {0} {1}:\n{2}".format(qtr, year, '\n'.join(results))
 
 def get_doge():
     """ wow """

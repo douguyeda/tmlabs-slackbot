@@ -6,11 +6,12 @@ https://stackoverflow.com/questions/40154672/importerror-file-cache-is-unavailab
 """
 import os
 import json
+import pickle
 from collections import OrderedDict
 from datetime import datetime, timedelta
-import httplib2
-from oauth2client.service_account import ServiceAccountCredentials
-from apiclient import discovery
+from google.auth.transport.requests import Request
+from googleapiclient.discovery import build
+from google_auth_oauthlib.flow import InstalledAppFlow
 
 ROW_MAP = {
     4: "IFE",
@@ -20,27 +21,39 @@ ROW_MAP = {
 JIRA_LINK = "https://contegixapp1.livenation.com/jira/browse/"
 
 def get_credentials():
-    """ Get valid credentials to use """
-    scope = ['https://www.googleapis.com/auth/spreadsheets.readonly']
-    credentials_raw = os.environ.get('GOOGLE_APPLICATION_CREDENTIALS')
-    service_account_info = json.loads(credentials_raw)
-    creds = ServiceAccountCredentials.from_json_keyfile_dict(service_account_info, scope)
+    """ Get valid credentials """
+    SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
+
+    creds = None
+    if os.path.exists('token.pickle'):
+        with open('token.pickle', 'rb') as token:
+            creds = pickle.load(token)
+    
+    # If there are no (valid) credentials available, let the user log in.
+    if not creds or not creds.valid:
+        if creds and creds.expired and creds.refresh_token:
+            creds.refresh(Request())
+        else:
+            flow = InstalledAppFlow.from_client_secrets_file(
+                'credentials.json', SCOPES)
+            creds = flow.run_local_server()
+        # Save the credentials for the next run
+        with open('token.pickle', 'wb') as token:
+            pickle.dump(creds, token)
+
     return creds
 
 def build_sheet(range_name):
     """ Build a google sheet by choosing a sheet and the range """
-    credentials = get_credentials()
-    http = credentials.authorize(httplib2.Http())
-    discoveryUrl = ('https://sheets.googleapis.com/$discovery/rest?version=v4')
-    service = discovery.build('sheets', 'v4', http=http, cache_discovery=False,
-                              discoveryServiceUrl=discoveryUrl)
-    spreadsheetId = "1yhqjAVuo_nlByP4G6zGfQ3gF3fz3IR4FXnqaN93OVUo"
-    result = service.spreadsheets().values().get(
-        spreadsheetId=spreadsheetId, range=range_name).execute()
+    creds = get_credentials()
+    service = build('sheets', 'v4', credentials=creds)
+    SPREADSHEETID = '1yhqjAVuo_nlByP4G6zGfQ3gF3fz3IR4FXnqaN93OVUo'
+    sheet = service.spreadsheets()
+    result = sheet.values().get(spreadsheetId=SPREADSHEETID,
+                                range=range_name).execute()
     values = result.get('values', [])
-
     if not values:
-        return "No values found in spreadsheet"
+        return 'No values found in spreadsheet'
     return values
 
 def get_all_tests():

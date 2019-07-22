@@ -10,8 +10,8 @@ import pickle
 from collections import OrderedDict
 from datetime import datetime, timedelta
 from googleapiclient.discovery import build
-from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
+from google.oauth2 import service_account
 
 ROW_MAP = {
     4: "IFE",
@@ -39,9 +39,8 @@ def get_credentials():
             credsFromHeroku = os.environ['GOOGLE_APPLICATION_CREDENTIALS']
             with open('credentials.json', 'w+') as f:
                 f.write(credsFromHeroku)
-            flow = InstalledAppFlow.from_client_secrets_file(
-                'credentials.json', SCOPES)
-            creds = flow.run_local_server(port=0)
+            creds = service_account.Credentials.from_service_account_file(
+                'credentials.json', scopes=SCOPES)
             with open(token_path, 'wb') as token:
                 pickle.dump(creds, token)
     return creds

@@ -6,8 +6,10 @@ Date: 02/19/2019
 from collections import OrderedDict
 from spreadsheet import get_active_ab_tests, get_active_psupport, get_active_by_index, get_by_product, get_by_EFEAT, get_by_recent, get_by_quarter, get_doge
 
+
 class Slackbot(object):
     """ Slackbot main class """
+
     def __init__(self, slack_client=None):
         self.slack_client = slack_client
         self.commands = OrderedDict([
@@ -18,14 +20,20 @@ class Slackbot(object):
             ("reload", "Returns all active tests which reload the page"),
             ("products", "Returns a list of products you can search by"),
             ("Search by product", "Type a product, such as 'RCO' or 'Discovery', to show all active tests on that product"),
-            ("Search by EFEAT####", "Type in the EFEAT####, such as '5927', to bring up information about that test"),
-            ("Search by recently launched", "Type in recent and day#, such as 'recent 7', to display all active tests launched in the past 7 days (max 120)"),
+            ("Search by EFEAT####",
+             "Type in the EFEAT####, such as '5927', to bring up information about that test"),
+            ("Search by recently launched",
+             "Type in recent and day#, such as 'recent 7', to display all active tests launched in the past 7 days (max 120)"),
             ("Search by quarter", "Type in the quarter and year, such as 'q1 2018', to pull all launched tests in that range")
         ])
-        self.default_response = "Beep Boop, here are a list of commands:\n" + '\n'.join("%s = %r" % (key, val) for (key, val) in self.commands.iteritems())
+        self.default_response = "Beep Boop, here are a list of commands:\n" + \
+            '\n'.join("%s = %r" % (key, val)
+                      for (key, val) in self.commands.iteritems())
         self.invalid_response = "Invalid query entered"
-        self.products = ["edp", "confirmation", "discovery", "identity", "mobile app", "order detail", "rco", "tmr checkout"]
-        self.products_response = "Type any of the below products to search by!\n" + "\n".join(self.products)
+        self.products = ["edp", "confirmation", "discovery", "identity",
+                         "mobile app", "order detail", "rco", "tmr checkout"]
+        self.products_response = "Type any of the below products to search by!\n" + \
+            "\n".join(self.products)
         self.doge = get_doge()
 
     def connect(self):

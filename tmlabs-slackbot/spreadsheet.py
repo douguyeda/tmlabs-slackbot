@@ -15,8 +15,8 @@ from helpers import get_credentials, parse_cell
 def build_sheet(name, column_start, column_end):
     """ Build google sheet by name, start column, and end column """
     sheet_range = "{0}!{1}:{2}".format(name, column_start, column_end)
-    creds = get_credentials()
-    service = build('sheets', 'v4', credentials=creds)
+    service = build('sheets', 'v4', credentials=get_credentials(),
+                    cache_discovery=False)
     sheet = service.spreadsheets()
     result = sheet.values().get(spreadsheetId=constants.AB_TESTS_SHEET_ID,
                                 range=sheet_range).execute()
@@ -104,7 +104,7 @@ def get_by_product(product):
 def get_by_EFEAT(efeat_num):
     """ Return the details of a ticket by EFEAT#### """
     if len(efeat_num) != 4:
-        return "Invalid EFEAT# entered.  Please make sure the EFEAT# is 4 digits long"
+        return constants.INVALID_EFEAT_ENTERED
 
     efeat = OrderedDict()
     efeat_string = "EFEAT-" + efeat_num
@@ -133,11 +133,11 @@ def get_by_EFEAT(efeat_num):
 def get_by_recent_days(days):
     """ Return all active tests launched in the past xx days """
     if not days.isdigit():
-        return "Invalid day passed.  Make sure you entered an integer"
+        return constants.INVALID_DAY_ENTERED
 
     days = int(days)
     if days > 120:
-        return "Max amount of days is 120.  Please try entering a number less than 120."
+        return constants.MAX_DAYS
 
     all_tests = get_all_tests()
     days_offset = datetime.today() - timedelta(days=days)

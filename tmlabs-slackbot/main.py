@@ -1,7 +1,6 @@
 """
 Main slackbot program
 Author: Douglas Uyeda
-https://github.com/michaelkrukov/heroku-python-script
 """
 import os
 import time

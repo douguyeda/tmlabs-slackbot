@@ -4,7 +4,7 @@ Author: Douglas Uyeda
 Date: 02/19/2019
 """
 from collections import OrderedDict
-from spreadsheet import get_active_ab_tests, get_active_psupport, get_active_by_index, get_by_product, get_by_EFEAT, get_by_recent, get_by_quarter, get_doge
+import spreadsheet
 
 
 class Slackbot(object):
@@ -24,7 +24,6 @@ class Slackbot(object):
              "Type in the EFEAT####, such as '5927', to bring up information about that test"),
             ("Search by recently launched",
              "Type in recent and day#, such as 'recent 7', to display all active tests launched in the past 7 days (max 120)"),
-            ("Search by quarter", "Type in the quarter and year, such as 'q1 2018', to pull all launched tests in that range")
         ])
         self.default_response = "Beep Boop, here are a list of commands:\n" + \
             '\n'.join("%s = %r" % (key, val)
@@ -34,7 +33,7 @@ class Slackbot(object):
                          "mobile app", "order detail", "rco", "tmr checkout"]
         self.products_response = "Type any of the below products to search by!\n" + \
             "\n".join(self.products)
-        self.doge = get_doge()
+        self.doge = spreadsheet.get_doge()
 
     def connect(self):
         """ Connect to RTM feed """
@@ -52,31 +51,26 @@ class Slackbot(object):
         command = command.lower()
         response = None
         if command.startswith("active"):
-            response = get_active_ab_tests()
+            response = spreadsheet.get_active_ab_tests()
         elif command.startswith("psupport"):
-            response = get_active_psupport()
+            response = spreadsheet.get_active_psupport()
         elif command == "ife":
-            response = get_active_by_index(4)
+            response = spreadsheet.get_active_by_index(4)
         elif command == "survey":
-            response = get_active_by_index(5)
+            response = spreadsheet.get_active_by_index(5)
         elif command.startswith("reload"):
-            response = get_active_by_index(6)
+            response = spreadsheet.get_active_by_index(6)
         elif command.startswith("products"):
             response = self.products_response
         elif command in self.products:
-            response = get_by_product(command)
+            response = spreadsheet.get_by_product(command)
         elif command.isdigit():
-            response = get_by_EFEAT(command)
+            response = spreadsheet.get_by_EFEAT(command)
         elif command.startswith("recent"):
             command = command.split()
             if len(command) != 2:
                 return self.invalid_response
-            response = get_by_recent(command[1])
-        elif command.startswith("q"):
-            command = command.split()
-            if len(command) != 2:
-                return self.invalid_response
-            response = get_by_quarter(command[0], command[1])
+            response = spreadsheet.get_by_recent_days(command[1])
         elif command.startswith("doge") or command.startswith("wow"):
             response = self.doge
         return response

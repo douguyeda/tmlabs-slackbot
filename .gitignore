@@ -1,4 +1,4 @@
-.pyc
+*.pyc
 .pylintrc
 .vscode
 .DS_Store

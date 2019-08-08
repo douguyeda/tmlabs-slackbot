@@ -4,6 +4,7 @@ Author: Douglas Uyeda
 Date: 02/19/2019
 """
 from collections import OrderedDict
+import constants
 import spreadsheet
 
 
@@ -28,9 +29,9 @@ class Slackbot(object):
         self.default_response = "Beep Boop, here are a list of commands:\n" + \
             '\n'.join("%s = %r" % (key, val)
                       for (key, val) in self.commands.iteritems())
-        self.invalid_response = "Invalid query entered"
-        self.products = ["edp", "confirmation", "discovery", "identity",
-                         "mobile app", "order detail", "rco", "tmr checkout"]
+        self.invalid_response = constants.INVALID_QUERY_ENTERED
+        self.products = ["co2", "confirmation", "dsco", "edp", "identity",
+                         "order detail", "rco", "tmr"]
         self.products_response = "Type any of the below products to search by!\n" + \
             "\n".join(self.products)
         self.doge = spreadsheet.get_doge()

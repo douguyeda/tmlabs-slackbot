@@ -26,3 +26,8 @@ def get_credentials():
         with open(token_path, 'wb') as token:
             pickle.dump(creds, token)
     return creds
+
+
+def parse_cell(value):
+    """ Ignore ASCII characters in case user entered them """
+    return value.encode('ascii', 'ignore')

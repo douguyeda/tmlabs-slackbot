@@ -9,17 +9,17 @@ from collections import OrderedDict
 from datetime import datetime, timedelta
 from googleapiclient.discovery import build
 import constants
-from helpers import get_credentials
+from helpers import get_credentials, parse_cell
 
 
-def build_sheet(range_name):
-    """ Build a google sheet by choosing a sheet and the range """
+def build_sheet(name, column_start, column_end):
+    """ Build google sheet by name, start column, and end column """
+    sheet_range = "{0}!{1}:{2}".format(name, column_start, column_end)
     creds = get_credentials()
     service = build('sheets', 'v4', credentials=creds)
-    SPREADSHEETID = '1yhqjAVuo_nlByP4G6zGfQ3gF3fz3IR4FXnqaN93OVUo'
     sheet = service.spreadsheets()
-    result = sheet.values().get(spreadsheetId=SPREADSHEETID,
-                                range=range_name).execute()
+    result = sheet.values().get(spreadsheetId=constants.AB_TESTS_SHEET_ID,
+                                range=sheet_range).execute()
     values = result.get('values', [])
     if not values:
         return constants.NO_RESULTS_FOUND
@@ -28,20 +28,20 @@ def build_sheet(range_name):
 
 def get_all_tests():
     """ Combine tests live and prod support sheet """
-    active = build_sheet("AB - Tests Live!A2:K")
-    product = build_sheet("AB - Prod Support!A2:K")
+    active = build_sheet(constants.AB_TESTS_LIVE, "A2", "K")
+    product = build_sheet(constants.AB_TESTS_PROD_SUPPORT, "A2", "K")
     return active + product
 
 
 def get_active_ab_tests():
     """ Return all active AB tests """
-    values = build_sheet("AB - Tests Live!A2:J")
+    values = build_sheet(constants.AB_TESTS_LIVE, "A2", "J")
     results = []
     for row in values:
         try:
             if row[9] == "x":
-                results.append("{0}{1} {2}".format(constants.JIRA_LINK, row[0].encode(
-                    'ascii', 'ignore'), row[1].encode('ascii', 'ignore')))
+                results.append("{0}{1} {2}".format(
+                    constants.JIRA_LINK, row[0], parse_cell(row[1])))
         except IndexError:
             pass
     if not results:
@@ -51,13 +51,13 @@ def get_active_ab_tests():
 
 def get_active_psupport():
     """ Return all active product support tests """
-    values = build_sheet("AB - Prod Support!A2:J")
+    values = build_sheet(constants.AB_TESTS_PROD_SUPPORT, "A2", "J")
     results = []
     for row in values:
         try:
             if row[9] == "x":
-                results.append("{0}{1} {2}".format(constants.JIRA_LINK, row[0].encode(
-                    'ascii', 'ignore'), row[1].encode('ascii', 'ignore')))
+                results.append("{0}{1} {2}".format(
+                    constants.JIRA_LINK, row[0], parse_cell(row[1])))
         except IndexError:
             pass
 
@@ -68,13 +68,14 @@ def get_active_psupport():
 
 def get_active_by_index(row_num):
     """ Grab all active tests by row number """
-    tests = get_all_tests() if row_num == 6 else build_sheet("AB - Tests Live!A2:J")
+    tests = get_all_tests() if row_num == 6 else build_sheet(
+        constants.AB_TESTS_LIVE, "A2", "J")
     results = []
     for row in tests:
         try:
             if row[row_num] == "x" and row[9] == "x":
-                results.append("{0}{1} {2}".format(constants.JIRA_LINK, row[0].encode(
-                    'ascii', 'ignore'), row[1].encode('ascii', 'ignore')))
+                results.append("{0}{1} {2}".format(
+                    constants.JIRA_LINK, row[0], parse_cell(row[1])))
         except IndexError:
             pass
 
@@ -91,7 +92,7 @@ def get_by_product(product):
         try:
             if row[9] == "x" and row[10].lower() == product:
                 results.append("{0}{1} {2}".format(
-                    constants.JIRA_LINK, row[0], row[1]))
+                    constants.JIRA_LINK, row[0], parse_cell(row[1])))
         except IndexError:
             pass
 
@@ -114,9 +115,8 @@ def get_by_EFEAT(efeat_num):
         try:
             if efeat_string in row:
                 found = True
-                efeat["Test Name"] = efeat_string + \
-                    " " + row[1].encode('ascii', 'ignore')
-                efeat["Hypothesis"] = row[3].replace("\n", ", ")
+                efeat["Test Name"] = efeat_string + " " + parse_cell(row[1])
+                efeat["Hypothesis"] = parse_cell(row[3]).replace("\n", ", ")
                 efeat["Launch Date"] = row[7]
                 efeat["Link"] = "{}{}".format(constants.JIRA_LINK, row[0])
                 if row[9] == "x":
@@ -147,8 +147,9 @@ def get_by_recent_days(days):
         try:
             launch_date = datetime.strptime(row[7], '%m/%d/%Y')
             if row[9] == "x" and launch_date > days_offset:
-                results.append("{0} {1}{2} {3}".format(row[7], constants.JIRA_LINK, row[0].encode(
-                    'ascii', 'ignore'), row[1].encode('ascii', 'ignore')))
+                results.append("{0} {1}{2} {3}".format(
+                    row[7], constants.JIRA_LINK, row[0], parse_cell(row[1])))
+
         except (IndexError, ValueError):
             pass
 

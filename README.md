@@ -1,7 +1,7 @@
 # Ticketmaster AB Bot
 
 TM Labs slackbot which returns information about active A/B tests.
-More information can be found here: https://contegixapp1.livenation.com/confluence/display/ECOM/AB+Slackbot
+More information can be found here: https://confluence.livenation.com/display/ECOM/TM+Labs+Slackbot
 
 ### Prerequisites
 

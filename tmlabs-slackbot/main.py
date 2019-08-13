@@ -7,12 +7,13 @@ import time
 from slackclient import SlackClient
 from slackbot import Slackbot
 
-# instantiate Slack client
-slack_client = SlackClient(os.environ.get('SLACK_BOT_TOKEN'))
 # 1 second delay between reading from RTM
 RTM_READ_DELAY = 1
 
 if __name__ == "__main__":
+    # instantiate Slack client
+    slack_client = SlackClient(os.environ.get('SLACK_BOT_TOKEN'))
+
     slackbot = Slackbot(slack_client)
     slackbot.connect()
     print "TM Labs AB Bot connected!"

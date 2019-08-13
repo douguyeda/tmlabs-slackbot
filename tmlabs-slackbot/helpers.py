@@ -18,9 +18,9 @@ def get_credentials():
 
     # If there are no (valid) credentials available, let the user log in.
     if not creds or not creds.valid:
-        credsFromHeroku = os.environ['GOOGLE_APPLICATION_CREDENTIALS']
+        credsFromEnv = os.environ['GOOGLE_APPLICATION_CREDENTIALS']
         with open('credentials.json', 'w+') as f:
-            f.write(credsFromHeroku)
+            f.write(credsFromEnv)
         creds = service_account.Credentials.from_service_account_file(
             'credentials.json', scopes=SCOPES)
         with open(token_path, 'wb') as token:

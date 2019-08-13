@@ -31,7 +31,7 @@ class Slackbot(object):
             '\n'.join("%s = %r" % (key, val)
                       for (key, val) in self.commands.iteritems())
         self.invalid_response = constants.INVALID_QUERY_ENTERED
-        self.products = ["co2", "confirmation", "dsco", "edp", "identity",
+        self.products = ["co2", "dsco", "edp", "identity", "ln - edp"
                          "order detail", "rco", "tmr"]
         self.products_response = "Type any of the below products to search by!\n" + \
             "\n".join(self.products)

@@ -2,9 +2,9 @@
 List of helper functions
 """
 import os
+import json
 import pickle
 from google.oauth2 import service_account
-import config
 
 
 def get_credentials():
@@ -19,7 +19,8 @@ def get_credentials():
 
     # If there are no (valid) credentials available, grab from config file
     if not creds or not creds.valid:
-        service_account_info = config.GOOGLE_APPLICATION_CREDENTIALS
+        service_account_info = json.loads(
+            os.environ["GOOGLE_APPLICATION_CREDENTIALS"])
         creds = service_account.Credentials.from_service_account_info(
             service_account_info, scopes=SCOPES)
         with open(token_path, 'wb') as token:

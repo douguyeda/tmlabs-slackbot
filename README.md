@@ -12,12 +12,13 @@ More information can be found here: https://confluence.livenation.com/display/EC
 
 ### Installing
 
-1.  Please save the following as environment variables:
-    1.  Google API Credentials - `GOOGLE_APPLICATION_CREDENTIALS` : `your value`
-    2.  Slack API Bot User OAuth Access token - `SLACK_BOT_TOKEN` : `your value`
-2.  Open a terminal and navigate to the root of the project
-3.  Type `pip install -r requirements.txt` to install dependencies
-4.  To run the program, type `python main.py`
+1.  Open a terminal, and navigate to the root of the project
+2.  Type `pip install -r requirements.txt` to install dependencies
+3.  Change directory into /tmlabs-slackbot/
+4.  Create a `config.py` file
+5.  Copy the contents of `config.sample.py` into `config.py`
+6.  Fill out each line with the required info
+7.  To run the program, type `python main.py`
 
 ### Authors
 

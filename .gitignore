@@ -2,7 +2,9 @@
 .pylintrc
 .vscode
 .DS_Store
-test.py
-credentials.json
 venv
 token.pickle
+
+# Python Files
+test.py
+config.py

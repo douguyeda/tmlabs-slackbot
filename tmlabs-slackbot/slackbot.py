@@ -6,6 +6,7 @@ Date: 02/19/2019
 from collections import OrderedDict
 import constants
 import spreadsheet
+from helpers import parse_direction_mention
 
 
 class Slackbot(object):
@@ -45,7 +46,9 @@ class Slackbot(object):
         """ Listen for messages and return the message and channel """
         for event in self.slack_client.rtm_read():
             if event["type"] == "message" and not "subtype" in event:
-                return event["text"], event["channel"]
+                user_id, message = parse_direction_mention(event["text"])
+                if user_id == self.slack_client:
+                    return message, event["channel"]
         return None, None
 
     def handle_command(self, command):

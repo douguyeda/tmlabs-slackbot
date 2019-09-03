@@ -2,9 +2,12 @@
 List of helper functions
 """
 import os
+import re
 import json
 import pickle
 from google.oauth2 import service_account
+
+MENTION_REGEX = "^<@(|[WU].+?)>(.*)"
 
 
 def get_credentials():
@@ -26,6 +29,17 @@ def get_credentials():
         with open(token_path, 'wb') as token:
             pickle.dump(creds, token)
     return creds
+
+
+def parse_direction_mention(message_text):
+    """
+    Finds a direct mention (a mention that is at the beginning) in message text
+    and returns the user ID which was mentioned. If there is no direct mention, returns None
+    """
+    matches = re.search(MENTION_REGEX, message_text)
+    if matches:
+        return(matches.group(1), matches.group(2).strip())
+    return (None, None)
 
 
 def parse_cell(value):

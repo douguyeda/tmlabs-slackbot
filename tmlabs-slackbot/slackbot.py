@@ -8,6 +8,8 @@ import constants
 import spreadsheet
 from helpers import parse_direction_mention
 
+SLACKBOT_ID = "U9X30LFHC"
+
 
 class Slackbot(object):
     """ Slackbot main class """
@@ -47,7 +49,7 @@ class Slackbot(object):
         for event in self.slack_client.rtm_read():
             if event["type"] == "message" and not "subtype" in event:
                 user_id, message = parse_direction_mention(event["text"])
-                if user_id == self.slack_client:
+                if user_id == SLACKBOT_ID:
                     return message, event["channel"]
         return None, None
 

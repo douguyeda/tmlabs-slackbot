@@ -6,7 +6,8 @@ Date: 02/19/2019
 from collections import OrderedDict
 import constants
 import spreadsheet
-from helpers import parse_direction_mention
+from usabilla_query import get_active_surveys
+from helpers import parse_direction_mention, get_doge
 
 SLACKBOT_ID = "U9X30LFHC"
 
@@ -20,7 +21,7 @@ class Slackbot(object):
             ("active", "Returns all active tests"),
             ("psupport", "Returns all active Product Support tests"),
             ("ife", "Returns all active IFE tests"),
-            ("survey", "Returns all active Usabilla Surveys"),
+            ("usabilla", "Returns all active Usabilla Surveys"),
             ("reload", "Returns all active tests which reload the page"),
             ("products", "Returns a list of products you can search by"),
             ("Search by product",
@@ -38,7 +39,6 @@ class Slackbot(object):
                          "order detail", "rco", "tmr"]
         self.products_response = "Type any of the below products to search by!\n" + \
             "\n".join(self.products)
-        self.doge = spreadsheet.get_doge()
 
     def connect(self):
         """ Connect to RTM feed """
@@ -63,8 +63,8 @@ class Slackbot(object):
             response = spreadsheet.get_active_psupport()
         elif command == "ife":
             response = spreadsheet.get_active_by_index(4)
-        elif command == "survey":
-            response = spreadsheet.get_active_by_index(5)
+        elif command == "usabilla":
+            response = get_active_surveys()
         elif command.startswith("reload"):
             response = spreadsheet.get_active_by_index(6)
         elif command.startswith("products"):
@@ -79,7 +79,7 @@ class Slackbot(object):
                 return self.invalid_response
             response = spreadsheet.get_by_recent_days(command[1])
         elif command.startswith("doge") or command.startswith("wow"):
-            response = self.doge
+            response = get_doge()
         return response
 
     def send_message(self, message, channel):

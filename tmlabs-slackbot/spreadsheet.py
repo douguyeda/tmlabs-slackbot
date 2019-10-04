@@ -9,7 +9,7 @@ from collections import OrderedDict
 from datetime import datetime, timedelta
 from googleapiclient.discovery import build
 import constants
-from helpers import get_credentials, parse_cell
+from helpers import get_credentials, is_active_test, format_row_result, parse_cell
 
 
 def build_sheet(name, column_start, column_end):
@@ -39,9 +39,8 @@ def get_active_ab_tests():
     results = []
     for row in values:
         try:
-            if row[9] == "x":
-                results.append("{0}{1} {2}".format(
-                    constants.JIRA_LINK, row[0], parse_cell(row[1])))
+            if is_active_test(row):
+                results.append(format_row_result(row))
         except IndexError:
             pass
     if not results:
@@ -55,9 +54,8 @@ def get_active_psupport():
     results = []
     for row in values:
         try:
-            if row[9] == "x":
-                results.append("{0}{1} {2}".format(
-                    constants.JIRA_LINK, row[0], parse_cell(row[1])))
+            if is_active_test(row):
+                results.append(format_row_result(row))
         except IndexError:
             pass
 
@@ -73,9 +71,8 @@ def get_active_by_index(row_num):
     results = []
     for row in tests:
         try:
-            if row[row_num] == "x" and row[9] == "x":
-                results.append("{0}{1} {2}".format(
-                    constants.JIRA_LINK, row[0], parse_cell(row[1])))
+            if is_active_test(row) and row[row_num] == "x":
+                results.append(format_row_result(row))
         except IndexError:
             pass
 
@@ -90,9 +87,8 @@ def get_by_product(product):
     results = []
     for row in all_tests:
         try:
-            if row[9] == "x" and row[10].lower() == product:
-                results.append("{0}{1} {2}".format(
-                    constants.JIRA_LINK, row[0], parse_cell(row[1])))
+            if is_active_test(row) and row[10].lower() == product:
+                results.append(format_row_result(row))
         except IndexError:
             pass
 
@@ -113,13 +109,13 @@ def get_by_EFEAT(efeat_num):
     all_tests = get_all_tests()
     for row in all_tests:
         try:
-            if efeat_string in row:
+            if efeat_string == row:
                 found = True
                 efeat["Test Name"] = efeat_string + " " + parse_cell(row[1])
                 efeat["Hypothesis"] = parse_cell(row[3]).replace("\n", ", ")
                 efeat["Launch Date"] = row[7]
                 efeat["Link"] = "{}{}".format(constants.JIRA_LINK, row[0])
-                if row[9] == "x":
+                if is_active_test(row):
                     efeat["Active"] = "yes"
                 break
         except IndexError:
@@ -146,7 +142,7 @@ def get_by_recent_days(days):
     for row in all_tests:
         try:
             launch_date = datetime.strptime(row[7], '%m/%d/%Y')
-            if row[9] == "x" and launch_date > days_offset:
+            if is_active_test(row) and launch_date > days_offset:
                 results.append("{0} {1}{2} {3}".format(
                     row[7], constants.JIRA_LINK, row[0], parse_cell(row[1])))
 
@@ -156,9 +152,3 @@ def get_by_recent_days(days):
     if not results:
         return constants.NO_RESULTS_FOUND
     return '\n'.join(results)
-
-
-def get_doge():
-    """ wow """
-    filehandle = open("tmlabs-slackbot/doge.txt", "r")
-    return filehandle.read()

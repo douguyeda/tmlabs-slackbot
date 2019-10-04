@@ -49,7 +49,7 @@ def format_row_result(row):
 
 def get_doge():
     """ wow """
-    path = os.path.abspath('doge.txt')
+    path = os.path.abspath('tmlabs-slackbot/doge.txt')
     if os.path.exists(path):
         filehandle = open(path, "r")
         return filehandle.read()

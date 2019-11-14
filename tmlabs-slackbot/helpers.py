@@ -69,8 +69,4 @@ def parse_direction_mention(message_text):
 
 def get_doge():
     """ wow """
-    path = os.path.join(__location__, "doge.txt")
-    if os.path.exists(path):
-        filehandle = open(path, "r")
-        return filehandle.read()
-    return "wow, very slackbot"
+    return ":doge2:"

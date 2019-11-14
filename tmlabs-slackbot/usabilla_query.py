@@ -6,7 +6,7 @@ from constants import EFEAT, USABILLA_URL
 
 def is_active_survey(survey):
     """ determines if a survey is active or not """
-    return survey['status'] == 'active' and EFEAT in survey['name']
+    return survey["status"] == "active" and EFEAT in survey["name"]
 
 
 def get_active_surveys():
@@ -26,7 +26,7 @@ def get_active_surveys():
             if is_active_survey(survey):
                 output.append("{0}{1} {2}".format(
                     USABILLA_URL, survey["id"], survey["name"]))
-        return '\n'.join(output)
+        return "\n".join(output)
 
     except Exception as e:
         return e.message

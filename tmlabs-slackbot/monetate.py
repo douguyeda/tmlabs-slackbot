@@ -7,11 +7,10 @@ from collections import OrderedDict
 from datetime import datetime, timedelta
 import requests
 import requests_cache
-from constants import INVALID_DAY_ENTERED, INVALID_EFEAT_ENTERED, NO_RESULTS_FOUND, MAX_DAYS
+from constants import EXPERIENCE_SUMMARY_URL, INVALID_DAY_ENTERED, INVALID_EFEAT_ENTERED, NO_RESULTS_FOUND, MAX_DAYS
 from helpers import create_external_link, format_date, get_monetate_auth_token
 
 
-EXPERIENCE_SUMMARY_URL = 'https://api.monetate.net/api/metadata/v1/ticketmaster/production/metadata/experience-summary'
 PAGE_SIZE = 150
 SKIPPED_WORDS = ["A/A", "Companion", "[Goals]",
                  "Behavior", "Reporting", "[Sizing]", "[Demo]"]
@@ -21,7 +20,7 @@ __location__ = os.path.realpath(
 
 # cache results frome monetate metadata experience api
 requests_cache.install_cache(
-    os.path.join(__location__, "monetate_cache"), backend='sqlite', expire_after=600)
+    os.path.join(__location__, "monetate_cache"), backend="sqlite", expire_after=600)
 
 
 def get_experiences():
@@ -29,8 +28,8 @@ def get_experiences():
     auth_token = get_monetate_auth_token()
     experiences = requests.get(EXPERIENCE_SUMMARY_URL,
                                headers={
-                                   'Authorization': 'Token {}'.format(auth_token)},
-                               params={'account_domain': 'ticketmaster.com', 'page_size': PAGE_SIZE, 'status': 'active'}).json()
+                                   "Authorization": "Token {}".format(auth_token)},
+                               params={"account_domain": "ticketmaster.com", "page_size": PAGE_SIZE, "status": "active"}).json()
 
     results = []
     if experiences["meta"]["code"] > 400:
@@ -57,7 +56,7 @@ def get_active_ab_tests():
 
     if not results:
         return NO_RESULTS_FOUND
-    return '\n'.join(results)
+    return "\n".join(results)
 
 
 def get_active_psupport():
@@ -72,7 +71,7 @@ def get_active_psupport():
 
     if not results:
         return NO_RESULTS_FOUND
-    return '\n'.join(results)
+    return "\n".join(results)
 
 
 def get_active_by_product(product):
@@ -87,7 +86,7 @@ def get_active_by_product(product):
 
     if not results:
         return NO_RESULTS_FOUND
-    return '\n'.join(results)
+    return "\n".join(results)
 
 
 def get_active_by_EFEAT(efeat_num):
@@ -127,7 +126,7 @@ def get_by_recent_days(days):
 
     for exp in experiences:
         launch_date = datetime.strptime(
-            exp["start_time"], '%Y-%m-%dT%H:%M:%S.%fZ')
+            exp["start_time"], "%Y-%m-%dT%H:%M:%S.%fZ")
         experience_name = exp["experience_name"]
         if launch_date > days_offset:
             results.append(create_external_link(
@@ -135,4 +134,4 @@ def get_by_recent_days(days):
 
     if not results:
         return NO_RESULTS_FOUND
-    return '\n'.join(results)
+    return "\n".join(results)

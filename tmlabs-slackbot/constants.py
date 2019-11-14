@@ -3,6 +3,7 @@ List of constants
 """
 
 EFEAT = "EFEAT"
+EXPERIENCE_SUMMARY_URL = "https://api.monetate.net/api/metadata/v1/ticketmaster/production/metadata/experience-summary"
 INVALID_DAY_ENTERED = "Invalid day entered.  Make sure you entered an integer"
 INVALID_EFEAT_ENTERED = "Invalid EFEAT# entered.  Please make sure the EFEAT# is 4 digits long."
 INVALID_QUERY_ENTERED = "Invalid query entered."

@@ -3,7 +3,8 @@
 .vscode
 .DS_Store
 venv
-token.pickle
+*.pickle
+*.sqlite
 
 # Python Files
 test.py

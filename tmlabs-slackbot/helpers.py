@@ -2,22 +2,58 @@
 List of helper functions
 """
 import os
+import time
 import re
-import json
-from google.oauth2 import service_account
-from constants import JIRA_LINK
+import pickle
+from datetime import datetime
+import requests
+import jwt
+from constants import EFEAT, JIRA_LINK, MONETATE_LINK
 
-SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
+__location__ = os.path.realpath(
+    os.path.join(os.getcwd(), os.path.dirname(__file__)))
+
 MENTION_REGEX = "^<@(|[WU].+?)>(.*)"
+REFRESH_URL = "https://api.monetate.net/api/auth/v0/refresh/"
 
 
-def get_credentials():
-    """ Get valid credentials from Google API """
-    service_account_info = json.loads(
-        os.environ["GOOGLE_APPLICATION_CREDENTIALS"])
-    creds = service_account.Credentials.from_service_account_info(
-        service_account_info, scopes=SCOPES)
-    return creds
+def get_monetate_auth_token():
+    """ Grab Monetate Auth Token """
+    creds = None
+    token_path = os.path.join(__location__, "monetate_token.pickle")
+    if os.path.exists(token_path):
+        with open(token_path, "rb") as token:
+            creds = pickle.load(token)
+            if datetime.now() < datetime.fromtimestamp(creds["data"]["expires_at"]):
+                return creds["data"]["token"]
+
+    private_key = os.environ["MONETATE_PRIVATE_KEY"]
+    payload = jwt.encode({
+        "username": "api-735-douglasuyeda",
+        "iat": int(time.time())
+    }, private_key, algorithm="RS256")
+    authorization = "JWT {}".format(payload)
+    creds = requests.get(REFRESH_URL, headers={
+        "Authorization": authorization}).json()
+    with open(token_path, "wb") as token:
+        pickle.dump(creds, token)
+
+    return creds["data"]["token"]
+
+
+def create_external_link(experience_name, experience_id):
+    """ create jira link from experience name """
+    if EFEAT in experience_name:
+        index = experience_name.find(EFEAT)
+        return JIRA_LINK + EFEAT + "-" + experience_name[index+5: index+9]
+    return MONETATE_LINK + str(experience_id)
+
+
+def format_date(date_str):
+    """ format experience summary api date to mm/dd/yyyy"""
+    no_time = date_str[:10]
+    formatted = datetime.strptime(no_time, '%Y-%m-%d')
+    return formatted.strftime("%m/%d/%Y")
 
 
 def parse_direction_mention(message_text):
@@ -31,25 +67,9 @@ def parse_direction_mention(message_text):
     return (None, None)
 
 
-def is_active_test(row):
-    """ determines if an AB test is active if row 9 has an 'X' """
-    return row[9] == "x"
-
-
-def parse_cell(value):
-    """ Ignore ASCII characters in case user entered them """
-    return value.encode('ascii', 'ignore')
-
-
-def format_row_result(row):
-    """ Formats the result from reading google sheet """
-    return "{0}{1} {2}".format(
-        JIRA_LINK, row[0], parse_cell(row[1]))
-
-
 def get_doge():
     """ wow """
-    path = os.path.abspath('tmlabs-slackbot/doge.txt')
+    path = os.path.join(__location__, "doge.txt")
     if os.path.exists(path):
         filehandle = open(path, "r")
         return filehandle.read()

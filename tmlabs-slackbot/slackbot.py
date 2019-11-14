@@ -4,8 +4,8 @@ Author: Douglas Uyeda
 Date: 02/19/2019
 """
 from collections import OrderedDict
-import constants
-import spreadsheet
+from constants import INVALID_QUERY_ENTERED
+import monetate
 from usabilla_query import get_active_surveys
 from helpers import parse_direction_mention, get_doge
 
@@ -20,9 +20,7 @@ class Slackbot(object):
         self.commands = OrderedDict([
             ("active", "Returns all active tests"),
             ("psupport", "Returns all active Product Support tests"),
-            ("ife", "Returns all active IFE tests"),
             ("usabilla", "Returns all active Usabilla Surveys"),
-            ("reload", "Returns all active tests which reload the page"),
             ("products", "Returns a list of products you can search by"),
             ("Search by product",
              "Type a product, such as 'rco' or 'dsco', to show all active tests on that product"),
@@ -34,9 +32,8 @@ class Slackbot(object):
         self.default_response = "Beep Boop, here are a list of commands:\n" + \
             '\n'.join("%s = %r" % (key, val)
                       for (key, val) in self.commands.iteritems())
-        self.invalid_response = constants.INVALID_QUERY_ENTERED
-        self.products = ["co2", "dsco", "edp", "identity", "ln - edp",
-                         "order detail", "rco", "tmr"]
+        self.products = ["apps", "co2", "dsco",
+                         "edp", "ln.com", "my.tm.com" "rco"]
         self.products_response = "Type any of the below products to search by!\n" + \
             "\n".join(self.products)
 
@@ -58,26 +55,22 @@ class Slackbot(object):
         command = command.lower()
         response = None
         if command.startswith("active"):
-            response = spreadsheet.get_active_ab_tests()
+            response = monetate.get_active_ab_tests()
         elif command.startswith("psupport"):
-            response = spreadsheet.get_active_psupport()
-        elif command == "ife":
-            response = spreadsheet.get_active_by_index(4)
+            response = monetate.get_active_psupport()
         elif command == "usabilla":
             response = get_active_surveys()
-        elif command.startswith("reload"):
-            response = spreadsheet.get_active_by_index(6)
         elif command.startswith("products"):
             response = self.products_response
         elif command in self.products:
-            response = spreadsheet.get_by_product(command)
+            response = monetate.get_active_by_product(command)
         elif command.isdigit():
-            response = spreadsheet.get_by_EFEAT(command)
+            response = monetate.get_active_by_EFEAT(command)
         elif command.startswith("recent"):
             command = command.split()
             if len(command) != 2:
-                return self.invalid_response
-            response = spreadsheet.get_by_recent_days(command[1])
+                return INVALID_QUERY_ENTERED
+            response = monetate.get_by_recent_days(command[1])
         elif command.startswith("doge") or command.startswith("wow"):
             response = get_doge()
         return response

@@ -33,7 +33,7 @@ class Slackbot(object):
             '\n'.join("%s = %r" % (key, val)
                       for (key, val) in self.commands.iteritems())
         self.products = ["apps", "co2", "dsco",
-                         "edp", "ln.com", "my.tm.com" "rco"]
+                         "edp", "ln.com", "my.tm.com", "rco"]
         self.products_response = "Type any of the below products to search by!\n" + \
             "\n".join(self.products)
 

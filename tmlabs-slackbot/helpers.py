@@ -8,13 +8,12 @@ import pickle
 from datetime import datetime
 import requests
 import jwt
-from constants import EFEAT, JIRA_LINK, MONETATE_LINK
+from constants import EFEAT, JIRA_LINK, MONETATE_LINK, REFRESH_URL
 
 __location__ = os.path.realpath(
     os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
 MENTION_REGEX = "^<@(|[WU].+?)>(.*)"
-REFRESH_URL = "https://api.monetate.net/api/auth/v0/refresh/"
 
 
 def get_monetate_auth_token():

@@ -78,9 +78,10 @@ def get_active_by_product(product):
     """ Returns all active tests by product name """
     results = []
     experiences = get_experiences()
+    product_search_string = "[" + product
     for exp in experiences:
         experience_name = exp["experience_name"]
-        if product in experience_name.lower():
+        if product_search_string in experience_name.lower():
             results.append(create_external_link(
                 experience_name, exp["id"]) + " " + experience_name)
 

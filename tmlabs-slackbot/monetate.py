@@ -15,6 +15,8 @@ PAGE_SIZE = 150
 SKIPPED_WORDS = ["A/A", "Companion", "[Goals]",
                  "Behavior", "Reporting", "[Sizing]", "[Demo]"]
 
+DSCO_KEYWORDS = ['[dsco', '[discovery', '[ccp discovery']
+
 __location__ = os.path.realpath(
     os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
@@ -78,12 +80,20 @@ def get_active_by_product(product):
     """ Returns all active tests by product name """
     results = []
     experiences = get_experiences()
-    product_search_string = "[" + product
-    for exp in experiences:
-        experience_name = exp["experience_name"]
-        if product_search_string in experience_name.lower():
-            results.append(create_external_link(
-                experience_name, exp["id"]) + " " + experience_name)
+
+    if product == 'dsco':
+        for exp in experiences:
+            experience_name = exp["experience_name"]
+            if any(word in experience_name.lower() for word in DSCO_KEYWORDS):
+                results.append(create_external_link(
+                    experience_name, exp["id"]) + " " + experience_name)
+
+    else:
+        product_search_string = "[" + product
+        for exp in experiences:
+            if product_search_string in experience_name.lower():
+                results.append(create_external_link(
+                    experience_name, exp["id"]) + " " + experience_name)
 
     if not results:
         return NO_RESULTS_FOUND

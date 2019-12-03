@@ -91,6 +91,7 @@ def get_active_by_product(product):
     else:
         product_search_string = "[" + product
         for exp in experiences:
+            experience_name = exp["experience_name"]
             if product_search_string in experience_name.lower():
                 results.append(create_external_link(
                     experience_name, exp["id"]) + " " + experience_name)

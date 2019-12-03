@@ -12,8 +12,8 @@ from helpers import create_external_link, format_date, get_monetate_auth_token
 
 
 PAGE_SIZE = 150
-SKIPPED_WORDS = ["A/A", "Companion", "[Goals]",
-                 "Behavior", "Reporting", "[Sizing]", "[Demo]"]
+SKIPPED_WORDS = ["a/a", "companion", "[goals",
+                 "[behavior", "reporting", "[sizing", "[demo"]
 
 DSCO_KEYWORDS = ['[dsco', '[discovery', '[ccp discovery']
 
@@ -40,7 +40,7 @@ def get_experiences():
 
     # filter out unneeded experiences
     for exp in experiences["data"]:
-        if not any(word in exp["experience_name"] for word in SKIPPED_WORDS):
+        if not any(word in exp["experience_name"].lower() for word in SKIPPED_WORDS):
             results.append(exp)
 
     return results

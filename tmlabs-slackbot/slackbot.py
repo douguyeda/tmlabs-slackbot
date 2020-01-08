@@ -3,11 +3,11 @@ Slackbot class which handles command from user
 Author: Douglas Uyeda
 Date: 02/19/2019
 """
-from collections import OrderedDict
 from constants import INVALID_QUERY_ENTERED
 import monetate
 from usabilla_query import get_active_surveys
 from helpers import parse_direction_mention, get_doge
+from commands import COMMANDS, PRODUCTS
 
 SLACKBOT_ID = "U9X30LFHC"
 
@@ -17,25 +17,11 @@ class Slackbot(object):
 
     def __init__(self, slack_client=None):
         self.slack_client = slack_client
-        self.commands = OrderedDict([
-            ("active", "Returns all active tests"),
-            ("psupport", "Returns all active Product Support tests"),
-            ("usabilla", "Returns all active Usabilla Surveys"),
-            ("products", "Returns a list of products you can search by"),
-            ("Search by product",
-             "Type a product, such as 'rco' or 'dsco', to show all active tests on that product"),
-            ("Search by EFEAT####",
-             "Type in the EFEAT####, such as '5927', to bring up information about that test"),
-            ("Search by recently launched",
-             "Type in recent and day#, such as 'recent 7', to display all active tests launched in the past 7 days (max 120)"),
-        ])
         self.default_response = "Beep Boop, here are a list of commands:\n" + \
             '\n'.join("%s = %r" % (key, val)
-                      for (key, val) in self.commands.iteritems())
-        self.products = ["apps", "co2", "dsco",
-                         "edp", "ln.com", "my.tm.com", "rco"]
+                      for (key, val) in COMMANDS.iteritems())
         self.products_response = "Type any of the below products to search by!\n" + \
-            "\n".join(self.products)
+            "\n".join(PRODUCTS)
 
     def connect(self):
         """ Connect to RTM feed """
@@ -62,7 +48,7 @@ class Slackbot(object):
             response = get_active_surveys()
         elif command.startswith("products"):
             response = self.products_response
-        elif command in self.products:
+        elif command in PRODUCTS:
             response = monetate.get_active_by_product(command)
         elif command.isdigit():
             response = monetate.get_active_by_EFEAT(command)

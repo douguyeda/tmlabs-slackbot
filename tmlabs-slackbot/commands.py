@@ -17,4 +17,4 @@ COMMANDS = OrderedDict([
 ])
 
 PRODUCTS = ["apps", "co2", "dsco",
-            "edp", "ln.com", "my.tm.com", "rco"]
+            "edp", "ln.com", "post-purchase", "rco"]

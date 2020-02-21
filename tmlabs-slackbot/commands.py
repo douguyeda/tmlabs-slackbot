@@ -16,5 +16,4 @@ COMMANDS = OrderedDict([
      "Type in recent and day#, such as 'recent 7', to display all active tests launched in the past 7 days (max 120)"),
 ])
 
-PRODUCTS = ["apps", "co2", "dsco",
-            "edp", "ln.com", "post-purchase", "rco"]
+PRODUCTS = ["apps", "co2", "dsco", "edp", "post-purchase", "rco"]

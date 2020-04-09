@@ -50,10 +50,9 @@ def get_active_ab_tests():
     results = []
     experiences = get_experiences()
     for exp in experiences:
-        experience_name = exp["experience_name"]
-        experience_id = exp["id"]
-        results.append(create_external_link(
-            experience_name, experience_id) + " " + experience_name)
+        exp_name = exp["experience_name"]
+        external_link = create_external_link(exp_name, exp["id"])
+        results.append(f"{external_link} {exp_name}")
 
     if not results:
         return NO_RESULTS_FOUND
@@ -66,9 +65,9 @@ def get_active_psupport():
     experiences = get_experiences()
     for exp in experiences:
         if len(exp["splits"]) == 1:
-            experience_name = exp["experience_name"]
-            results.append(create_external_link(
-                experience_name, exp["id"]) + " " + experience_name)
+            exp_name = exp["experience_name"]
+            external_link = create_external_link(exp_name, exp["id"])
+            results.append(f"{external_link} {exp_name}")
 
     if not results:
         return NO_RESULTS_FOUND

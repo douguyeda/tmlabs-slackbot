@@ -7,9 +7,20 @@ from constants import INVALID_QUERY_ENTERED
 from monetate import get_active_ab_tests, get_active_psupport, get_active_by_product, get_active_by_EFEAT, get_by_recent_days
 from usabilla_query import get_active_surveys
 from helpers import parse_direction_mention, get_doge
-from commands import COMMANDS, PRODUCTS
 
 SLACKBOT_ID = "U9X30LFHC"
+
+COMMANDS = {
+    "active": "Returns all active tests",
+    "psupport": "Returns all active Product Support tests",
+    "usabilla": "Returns all active Usabilla Surveys",
+    "products": "Returns a list of products you can search by",
+    "Search by product": "Type a product, such as 'rco' or 'dsco', to show all active tests on that product",
+    "Search by EFEAT####": "Type in the EFEAT####, such as '5927', to bring up information about that test",
+    "Search by recently launched": "Type in recent and day#, such as 'recent 7', to display all active tests launched in the past 7 days (max 120)"
+}
+
+PRODUCTS = ["apps", "co2", "dsco", "edp", "post-purchase", "rco"]
 
 
 class Slackbot(object):
@@ -17,7 +28,7 @@ class Slackbot(object):
 
     def __init__(self, slack_client=None):
         self.slack_client = slack_client
-        self.default_response = "Beep Boop, here are a list of commands:\n" + \
+        self.default_response = "Sorry, I did not recognize that.  Here are a list of commands:\n" + \
             json.dumps(COMMANDS, indent=0)[2:-2]
         self.products_response = "Type any of the below products to search by!\n" + \
             "\n".join(PRODUCTS)

@@ -5,6 +5,7 @@
 venv
 *.pickle
 *.sqlite
+__pycache__
 
 # Python Files
 test.py

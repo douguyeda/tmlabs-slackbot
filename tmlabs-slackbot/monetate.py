@@ -3,7 +3,6 @@ Grab data from the monetate metadata api here
 """
 import os
 import json
-from collections import OrderedDict
 from datetime import datetime, timedelta
 import requests
 import requests_cache
@@ -35,7 +34,7 @@ def get_experiences():
 
     results = []
     if experiences["meta"]["code"] > 400:
-        print experiences["meta"]["errors"]
+        print(experiences["meta"]["errors"])
         return results
 
     # filter out unneeded experiences
@@ -105,7 +104,7 @@ def get_active_by_EFEAT(efeat_num):
     """ Return the details of a ticket by EFEAT#### """
     if len(efeat_num) != 4:
         return INVALID_EFEAT_ENTERED
-    efeat_dict = OrderedDict()
+    efeat_dict = {}
 
     experiences = get_experiences()
     found = False

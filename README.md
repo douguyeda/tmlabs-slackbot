@@ -5,7 +5,7 @@ More information can be found here: https://confluence.livenation.com/display/EC
 
 ### Prerequisites
 
-- python 2.7
+- python 3.7
 - pip
 - Monetate API Credentials
 - Bot User OAuth Access token from Slack API

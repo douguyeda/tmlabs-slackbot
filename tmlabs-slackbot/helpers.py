@@ -8,32 +8,45 @@ import pickle
 from datetime import datetime
 import requests
 import jwt
-from constants import EFEAT, JIRA_LINK, MONETATE_LINK, REFRESH_URL
+from constants import EFEAT, JIRA_LINK, MONETATE_LINK
 
 __location__ = os.path.realpath(
     os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
 MENTION_REGEX = "^<@(|[WU].+?)>(.*)"
+REFRESH_URL = "https://api.monetate.net/api/auth/v0/refresh/"
 
 
 def get_monetate_auth_token():
     """ Grab Monetate Auth Token """
     creds = None
     token_path = os.path.join(__location__, "monetate_token.pickle")
+
+    # read existing monetate auth token
     if os.path.exists(token_path):
         with open(token_path, "rb") as token:
             creds = pickle.load(token)
+            # if auth token still valid, use it
             if datetime.now() < datetime.fromtimestamp(creds["data"]["expires_at"]):
                 return creds["data"]["token"]
 
+    # read monetate token from env variable
     private_key = os.environ["MONETATE_PRIVATE_KEY"]
     payload = jwt.encode({
-        "username": "api-735-douglasuyeda",
+        "username": "api-735-slackbot",
         "iat": int(time.time())
-    }, private_key, algorithm="RS256")
+    }, private_key, algorithm="RS256").decode('utf-8')
     authorization = "JWT {}".format(payload)
+
     creds = requests.get(REFRESH_URL, headers={
         "Authorization": authorization}).json()
+
+    meta = creds["meta"]
+    if meta["code"] > 400:
+        print(meta)
+        return
+
+    # store for later use
     with open(token_path, "wb") as token:
         pickle.dump(creds, token)
 

@@ -1,10 +1,10 @@
 """
 Slackbot class which handles command from user
 Author: Douglas Uyeda
-Date: 02/19/2019
 """
+import json
 from constants import INVALID_QUERY_ENTERED
-import monetate
+from monetate import get_active_ab_tests, get_active_psupport, get_active_by_product, get_active_by_EFEAT, get_by_recent_days
 from usabilla_query import get_active_surveys
 from helpers import parse_direction_mention, get_doge
 from commands import COMMANDS, PRODUCTS
@@ -18,8 +18,7 @@ class Slackbot(object):
     def __init__(self, slack_client=None):
         self.slack_client = slack_client
         self.default_response = "Beep Boop, here are a list of commands:\n" + \
-            '\n'.join("%s = %r" % (key, val)
-                      for (key, val) in COMMANDS.iteritems())
+            json.dumps(COMMANDS, indent=0)[2:-2]
         self.products_response = "Type any of the below products to search by!\n" + \
             "\n".join(PRODUCTS)
 
@@ -41,22 +40,22 @@ class Slackbot(object):
         command = command.lower()
         response = None
         if command.startswith("active"):
-            response = monetate.get_active_ab_tests()
+            response = get_active_ab_tests()
         elif command.startswith("psupport"):
-            response = monetate.get_active_psupport()
+            response = get_active_psupport()
         elif command == "usabilla":
             response = get_active_surveys()
         elif command.startswith("products"):
             response = self.products_response
         elif command in PRODUCTS:
-            response = monetate.get_active_by_product(command)
+            response = get_active_by_product(command)
         elif command.isdigit():
-            response = monetate.get_active_by_EFEAT(command)
+            response = get_active_by_EFEAT(command)
         elif command.startswith("recent"):
             command = command.split()
             if len(command) != 2:
                 return INVALID_QUERY_ENTERED
-            response = monetate.get_by_recent_days(command[1])
+            response = get_by_recent_days(command[1])
         elif command.startswith("doge") or command.startswith("wow"):
             response = get_doge()
         return response
